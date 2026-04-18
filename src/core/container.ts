@@ -1,6 +1,5 @@
 // Composition root: здесь инстанцируются сервисы и связываются между собой.
-// Все transport'ы/controller'ы импортируют готовые сервисы отсюда, а не создают сами —
-// это единственная точка, где знают про конкретные зависимости (PrismaClient, другие сервисы).
+// Все transport'ы/controller'ы импортируют готовые сервисы отсюда, а не создают сами.
 //
 // Dependency direction:
 //   app/api/*   →   features/*/transport   →   container   →   features/*/service   →   db (PrismaClient)
@@ -10,10 +9,9 @@
 
 import { db } from '@/core/db/client';
 import { makeAuditResultsService } from '@/features/audit-results/service/audit-results.service';
-import { noopAuditLog } from '@/features/audit-results/service/types';
+import { makeAuditLogService } from '@/features/audit-log/service/audit-log.service';
 
-// Phase 5 заменит noopAuditLog на реальный makeAuditLogService(db).
-const auditLog = noopAuditLog;
+const auditLog = makeAuditLogService({ db });
 
 export const container = {
   db,

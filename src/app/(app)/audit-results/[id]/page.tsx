@@ -11,6 +11,7 @@ import { StatusSelect } from '@/features/audit-results/ui/status-select';
 import { SeveritySelect } from '@/features/audit-results/ui/severity-select';
 import { CommentForm } from '@/features/audit-results/ui/comment-form';
 import { ConfirmButton } from '@/features/audit-results/ui/confirm-button';
+import { HistoryList } from '@/features/audit-log/ui/history-list';
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -28,7 +29,10 @@ export default async function AuditResultDetailPage({ params }: PageProps) {
     if (err instanceof NotFoundError) notFound();
     throw err;
   }
-  const comments = await container.auditResults.listComments(id);
+  const [comments, history] = await Promise.all([
+    container.auditResults.listComments(id),
+    container.auditLog.listForEntity('AuditResult', id),
+  ]);
 
   const role = session.user.role;
   const canChangeStatus = canDo(role, 'auditResults.updateStatus');
@@ -135,10 +139,10 @@ export default async function AuditResultDetailPage({ params }: PageProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">История изменений</CardTitle>
+            <CardTitle className="text-base">История изменений ({history.length})</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-neutral-500">Появится в Phase 5 (feature: audit-log).</p>
+            <HistoryList entries={history} />
           </CardContent>
         </Card>
       </div>
