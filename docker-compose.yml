@@ -7,7 +7,8 @@ services:
       POSTGRES_PASSWORD: cft_password
       POSTGRES_DB: cft
     ports:
-      - '5432:5432'
+      # на хосте 55432, чтобы не конфликтовать с локальным Postgres (часто занимающим 5432/5433)
+      - '55432:5432'
     volumes:
       - cft_postgres_data:/var/lib/postgresql/data
     healthcheck:
