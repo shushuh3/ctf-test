@@ -1,28 +1,14 @@
-import { Bell, Search, Settings } from 'lucide-react';
+import { Bell } from 'lucide-react';
+import { PathBar } from './path-bar';
 
-export function PreviewTopbar({ openCount }: { openCount: number }) {
+export function PreviewTopbar() {
   return (
     <header className="topbar">
-      <div className="search-box">
-        <Search size={16} />
-        <span>Найти аудит, систему, пользователя…</span>
-        <kbd>⌘K</kbd>
-      </div>
-
+      <PathBar />
+      <span className="spacer" />
       <div className="actions">
-        <div className="kpi">
-          <span className="kpi-icon">
-            <Bell size={14} />
-          </span>
-          <span className="kpi-num">{openCount}</span>
-          <span className="kpi-label">в работе</span>
-        </div>
         <button type="button" className="icon-btn" aria-label="Уведомления">
-          <Bell size={18} />
-          <span className="notif-dot" />
-        </button>
-        <button type="button" className="icon-btn" aria-label="Настройки">
-          <Settings size={18} />
+          <Bell size={16} />
         </button>
       </div>
     </header>

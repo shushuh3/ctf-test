@@ -1,4 +1,5 @@
-import { ChevronRight, Download, Filter, Plus } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronRight, Filter } from 'lucide-react';
 import { container } from '@/core/container';
 import { requireAction } from '@/core/rbac/require';
 import { ListQuerySchema } from '@/features/audit-results/schemas';
@@ -8,23 +9,15 @@ const SEVERITY_LABEL: Record<string, string> = {
   LOW: 'Низкая',
   MEDIUM: 'Средняя',
   HIGH: 'Высокая',
-  CRITICAL: 'Критич.',
+  CRITICAL: 'Критическая',
 };
 const STATUS_LABEL: Record<string, string> = {
   NEW: 'Новый',
   IN_PROGRESS: 'В работе',
   RESOLVED: 'Решён',
   REJECTED: 'Отклонён',
-  CONFIRMED: 'Подтв.',
+  CONFIRMED: 'Подтверждён',
 };
-
-// Стабильный хэш-цвет для категории
-const CATEGORY_COLORS = ['c-purple', 'c-blue', 'c-pink', 'c-green', 'c-navy', 'c-orange'] as const;
-function colorFor(s: string) {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return CATEGORY_COLORS[Math.abs(h) % CATEGORY_COLORS.length];
-}
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -57,42 +50,36 @@ export default async function PreviewListPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <div className="page-head">
-        <div>
-          <h1>Результаты аудитов</h1>
-          <div className="subtle">
-            Показано {items.length} из {total}. Клик по строке открывает карточку&nbsp;
-            <code>/audit-results/:id</code>.
-          </div>
-        </div>
+      <nav className="crumbs" aria-label="breadcrumbs">
+        <Link href="/preview/audit-results">Аналитика</Link>
+        <span className="sep">/</span>
+        <span className="current">Результаты аудитов</span>
+      </nav>
 
+      <div className="page-head">
+        <div className="head-left">
+          <h1>Результаты аудитов</h1>
+          <span className="subtle">
+            Показано {items.length} из {total}
+          </span>
+        </div>
         <div className="head-actions">
-          <button type="button" className="pill">
-            <Download size={14} />
-            Экспорт
-          </button>
           <button type="button" className="pill">
             <Filter size={14} />
             Фильтры
           </button>
-          <button type="button" className="pill pill-accent">
-            <Plus size={14} />
-            Создать
-          </button>
         </div>
       </div>
 
-      <div className="summary">
-        <span className="chip c-orange">
-          <span className="chip-dot" />
-          Критичных: {critical}
+      <div className="summary-line">
+        <span>
+          Критических<strong>{critical}</strong>
         </span>
-        <span className="chip c-blue">
-          <span className="chip-dot" />В работе: {inProgress}
+        <span>
+          В работе<strong>{inProgress}</strong>
         </span>
-        <span className="chip c-gray">
-          <span className="chip-dot" />
-          Всего: {total}
+        <span>
+          Всего<strong>{total}</strong>
         </span>
       </div>
 
@@ -115,42 +102,28 @@ export default async function PreviewListPage({ searchParams }: PageProps) {
               return (
                 <ClickableRow key={r.id} href={`/audit-results/${r.id}`}>
                   <td>
-                    <div style={{ fontWeight: 700, fontSize: 14.5 }}>{found.date}</div>
-                    <div style={{ color: 'var(--text-meta)', fontSize: 12.5, marginTop: 3 }}>
-                      в {found.time}
-                    </div>
+                    <div>{found.date}</div>
+                    <div className="row-meta">в {found.time}</div>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600, fontSize: 14.5, color: 'var(--text-primary)' }}>
-                      {r.title}
-                    </div>
-                    <div style={{ marginTop: 6 }}>
-                      <span className={`chip ${colorFor(r.category)}`}>
-                        <span className="chip-dot" />
-                        {r.category}
-                      </span>
-                    </div>
+                    <div>{r.title}</div>
+                    <div className="row-meta">{r.category}</div>
                   </td>
-                  <td style={{ color: 'var(--text-secondary)', fontSize: 14 }}>{r.system.name}</td>
+                  <td style={{ color: 'var(--text-secondary)' }}>{r.system.name}</td>
                   <td>
-                    <span className={`sev-badge sev-${r.severity}`}>
-                      <span className="dot" />
+                    <span className={`mark-dot mark-${r.severity}`} />
+                    <span style={{ color: 'var(--text-secondary)' }}>
                       {SEVERITY_LABEL[r.severity]}
                     </span>
                   </td>
                   <td>
-                    <span className={`st-badge st-${r.status}`}>
-                      <span className="dot" />
-                      {STATUS_LABEL[r.status]}
-                    </span>
+                    <span className="status-label">{STATUS_LABEL[r.status]}</span>
                   </td>
-                  <td style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
-                    {r.assignee?.name ?? <span className="label-micro">auto</span>}
-                  </td>
+                  <td style={{ color: 'var(--text-secondary)' }}>{r.assignee?.name ?? '—'}</td>
                   <td style={{ textAlign: 'right' }}>
-                    <span className="num-big">{r.riskScore}</span>
+                    <span className="num">{r.riskScore}</span>
                     <span className="row-arrow">
-                      <ChevronRight size={16} />
+                      <ChevronRight size={15} />
                     </span>
                   </td>
                 </ClickableRow>
