@@ -1,0 +1,59 @@
+name: Load tests (k6)
+
+# Ручной запуск — k6 нагрузка не должна блокировать PR.
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: 'k6 script to run'
+        required: true
+        default: 'tests/load/list.js'
+        type: choice
+        options:
+          - tests/load/list.js
+          - tests/load/detail.js
+
+env:
+  DATABASE_URL: postgresql://cft:cft_password@localhost:5432/cft?schema=public
+  AUTH_SECRET: test_ci_secret_at_least_32_chars_long_ok_ok
+
+jobs:
+  k6:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: cft
+          POSTGRES_PASSWORD: cft_password
+          POSTGRES_DB: cft
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U cft -d cft"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:generate && pnpm prisma migrate deploy && pnpm db:seed
+      - run: pnpm build
+      - name: Start app
+        run: |
+          nohup pnpm start > /tmp/app.log 2>&1 &
+          for i in {1..30}; do
+            curl -s -o /dev/null http://localhost:3000/login && break
+            sleep 1
+          done
+      - uses: grafana/setup-k6-action@v1
+      - run: k6 run ${{ inputs.script }}
+        env:
+          BASE_URL: http://localhost:3000
