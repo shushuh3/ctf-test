@@ -5,12 +5,12 @@ import {
   ClipboardList,
   FileText,
   History,
-  LayoutGrid,
   Shield,
   Users,
 } from 'lucide-react';
 import { signOut } from '@/core/auth/auth';
 import type { Role } from '@/generated/prisma/enums';
+import { Logo } from './logo';
 
 type NavItem = {
   href: string;
@@ -32,16 +32,19 @@ const ADMIN: NavItem[] = [
   { href: '/preview/policies', label: 'Политики', icon: Shield, disabled: true },
 ];
 
+function initialsOf(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join('');
+}
+
 export function PreviewSidebar({ role, name, email }: { role: Role; name: string; email: string }) {
   return (
     <aside className="sidebar">
-      <div className="sidebar-brand">
-        <span className="logo-dot" />
-        <span style={{ fontWeight: 700, fontSize: 15, letterSpacing: '-0.01em' }}>CFT Audit</span>
-        <span style={{ marginLeft: 'auto', color: '#9a958c' }}>
-          <LayoutGrid size={16} />
-        </span>
-      </div>
+      <Logo />
 
       <div className="sidebar-section">Аналитика</div>
       {ANALYTICS.map((item) => (
@@ -70,37 +73,48 @@ export function PreviewSidebar({ role, name, email }: { role: Role; name: string
         </Link>
       ))}
 
-      <form
-        action={async () => {
-          'use server';
-          await signOut({ redirectTo: '/login' });
-        }}
-        className="sidebar-user"
-      >
-        <div className="avatar">🐻</div>
+      <div className="sidebar-spacer" />
+
+      <div className="sidebar-user">
+        <div className="avatar">{initialsOf(name)}</div>
         <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ fontWeight: 600, fontSize: 13, lineHeight: 1.2 }}>{name}</div>
-          <div style={{ fontSize: 11, color: '#9a958c', lineHeight: 1.3 }}>
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: 13.5,
+              lineHeight: 1.2,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {name}
+          </div>
+          <div
+            style={{
+              fontSize: 11,
+              color: '#9aa0a6',
+              lineHeight: 1.3,
+              marginTop: 2,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {role} · {email}
           </div>
         </div>
-        <button
-          type="submit"
-          title="Выйти"
-          style={{
-            border: 'none',
-            background: 'transparent',
-            color: '#9a958c',
-            cursor: 'pointer',
-            fontSize: 11,
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-            fontWeight: 600,
+        <form
+          action={async () => {
+            'use server';
+            await signOut({ redirectTo: '/login' });
           }}
         >
-          Выйти
-        </button>
-      </form>
+          <button type="submit" className="signout-btn" title="Выйти">
+            ⎋
+          </button>
+        </form>
+      </div>
     </aside>
   );
 }

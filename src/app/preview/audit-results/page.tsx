@@ -1,7 +1,8 @@
-import { Filter } from 'lucide-react';
+import { ChevronRight, Download, Filter, Plus } from 'lucide-react';
 import { container } from '@/core/container';
 import { requireAction } from '@/core/rbac/require';
 import { ListQuerySchema } from '@/features/audit-results/schemas';
+import { ClickableRow } from '../_components/clickable-row';
 
 const SEVERITY_LABEL: Record<string, string> = {
   LOW: 'Низкая',
@@ -16,6 +17,14 @@ const STATUS_LABEL: Record<string, string> = {
   REJECTED: 'Отклонён',
   CONFIRMED: 'Подтв.',
 };
+
+// Стабильный хэш-цвет для категории
+const CATEGORY_COLORS = ['c-purple', 'c-blue', 'c-pink', 'c-green', 'c-navy', 'c-orange'] as const;
+function colorFor(s: string) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return CATEGORY_COLORS[Math.abs(h) % CATEGORY_COLORS.length];
+}
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -43,29 +52,57 @@ export default async function PreviewListPage({ searchParams }: PageProps) {
   const query = ListQuerySchema.parse({ ...raw, pageSize: '15' });
   const { items, total } = await container.auditResults.list(query);
 
+  const critical = items.filter((r) => r.severity === 'CRITICAL').length;
+  const inProgress = items.filter((r) => r.status === 'IN_PROGRESS').length;
+
   return (
     <>
       <div className="page-head">
         <div>
           <h1>Результаты аудитов</h1>
           <div className="subtle">
-            Показано {items.length} из {total}. Данные — из основной БД, те же что и в&nbsp;
-            <code>/audit-results</code>.
+            Показано {items.length} из {total}. Клик по строке открывает карточку&nbsp;
+            <code>/audit-results/:id</code>.
           </div>
         </div>
-        <button type="button" className="pill">
-          <Filter size={14} />
-          Фильтры
-        </button>
+
+        <div className="head-actions">
+          <button type="button" className="pill">
+            <Download size={14} />
+            Экспорт
+          </button>
+          <button type="button" className="pill">
+            <Filter size={14} />
+            Фильтры
+          </button>
+          <button type="button" className="pill pill-accent">
+            <Plus size={14} />
+            Создать
+          </button>
+        </div>
+      </div>
+
+      <div className="summary">
+        <span className="chip c-orange">
+          <span className="chip-dot" />
+          Критичных: {critical}
+        </span>
+        <span className="chip c-blue">
+          <span className="chip-dot" />В работе: {inProgress}
+        </span>
+        <span className="chip c-gray">
+          <span className="chip-dot" />
+          Всего: {total}
+        </span>
       </div>
 
       <div className="surface">
         <table className="aud">
           <thead>
             <tr>
-              <th style={{ width: '14%' }}>Обнаружено</th>
-              <th style={{ width: '32%' }}>Заголовок</th>
-              <th style={{ width: '14%' }}>Система</th>
+              <th style={{ width: '13%' }}>Обнаружено</th>
+              <th style={{ width: '34%' }}>Заголовок</th>
+              <th style={{ width: '13%' }}>Система</th>
               <th>Критичность</th>
               <th>Статус</th>
               <th>Ответственный</th>
@@ -76,71 +113,62 @@ export default async function PreviewListPage({ searchParams }: PageProps) {
             {items.map((r) => {
               const found = fmtDateParts(r.foundAt);
               return (
-                <tr key={r.id}>
+                <ClickableRow key={r.id} href={`/audit-results/${r.id}`}>
                   <td>
-                    <div style={{ fontWeight: 600 }}>{found.date}</div>
-                    <div style={{ color: 'var(--text-meta)', fontSize: 12, marginTop: 2 }}>
+                    <div style={{ fontWeight: 700, fontSize: 14.5 }}>{found.date}</div>
+                    <div style={{ color: 'var(--text-meta)', fontSize: 12.5, marginTop: 3 }}>
                       в {found.time}
                     </div>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600 }}>{r.title}</div>
-                    <div
-                      className="label-micro"
-                      style={{
-                        marginTop: 4,
-                        textTransform: 'none',
-                        letterSpacing: 0,
-                        fontSize: 11,
-                      }}
-                    >
-                      {r.category}
+                    <div style={{ fontWeight: 600, fontSize: 14.5, color: 'var(--text-primary)' }}>
+                      {r.title}
+                    </div>
+                    <div style={{ marginTop: 6 }}>
+                      <span className={`chip ${colorFor(r.category)}`}>
+                        <span className="chip-dot" />
+                        {r.category}
+                      </span>
                     </div>
                   </td>
-                  <td>{r.system.name}</td>
+                  <td style={{ color: 'var(--text-secondary)', fontSize: 14 }}>{r.system.name}</td>
                   <td>
-                    <span className={`dot sev-${r.severity}`} />
-                    <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500 }}>
+                    <span className={`sev-badge sev-${r.severity}`}>
+                      <span className="dot" />
                       {SEVERITY_LABEL[r.severity]}
                     </span>
                   </td>
                   <td>
-                    <span className={`dot st-${r.status}`} />
-                    <span
-                      style={{
-                        color: 'var(--text-secondary)',
-                        fontSize: 11,
-                        fontWeight: 600,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.06em',
-                      }}
-                    >
+                    <span className={`st-badge st-${r.status}`}>
+                      <span className="dot" />
                       {STATUS_LABEL[r.status]}
                     </span>
                   </td>
-                  <td style={{ color: 'var(--text-secondary)' }}>
+                  <td style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
                     {r.assignee?.name ?? <span className="label-micro">auto</span>}
                   </td>
-                  <td className="num" style={{ textAlign: 'right', fontSize: 15 }}>
-                    {r.riskScore}
+                  <td style={{ textAlign: 'right' }}>
+                    <span className="num-big">{r.riskScore}</span>
+                    <span className="row-arrow">
+                      <ChevronRight size={16} />
+                    </span>
                   </td>
-                </tr>
+                </ClickableRow>
               );
             })}
           </tbody>
         </table>
       </div>
 
-      <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
-        <span className="pill pill-ghost">
-          <span className="label-micro">Всего</span>
-          <strong className="num" style={{ marginLeft: 6 }}>
-            {total}
-          </strong>
-        </span>
-        <span className="pill pill-ghost">
-          <span className="label-micro">Страница 1 из {Math.max(1, Math.ceil(total / 15))}</span>
-        </span>
+      <div style={{ marginTop: 18, display: 'flex', gap: 10, alignItems: 'center' }}>
+        <span className="label-micro">Страница 1 из {Math.max(1, Math.ceil(total / 15))}</span>
+        <span style={{ flex: 1 }} />
+        <button type="button" className="pill" disabled>
+          ← Назад
+        </button>
+        <button type="button" className="pill">
+          Вперёд →
+        </button>
       </div>
     </>
   );

@@ -1,25 +1,29 @@
-import { Bell, Sun } from 'lucide-react';
+import { Bell, Search, Settings } from 'lucide-react';
 
 export function PreviewTopbar({ openCount }: { openCount: number }) {
   return (
     <header className="topbar">
-      <div />
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div className="search-box">
+        <Search size={16} />
+        <span>Найти аудит, систему, пользователя…</span>
+        <kbd>⌘K</kbd>
+      </div>
+
+      <div className="actions">
         <div className="kpi">
           <span className="kpi-icon">
-            <Sun size={14} />
+            <Bell size={14} />
           </span>
           <span className="kpi-num">{openCount}</span>
           <span className="kpi-label">в работе</span>
         </div>
-        <div className="actions">
-          <button type="button" className="icon-btn" aria-label="Тема">
-            <Sun size={18} />
-          </button>
-          <button type="button" className="icon-btn" aria-label="Уведомления">
-            <Bell size={18} />
-          </button>
-        </div>
+        <button type="button" className="icon-btn" aria-label="Уведомления">
+          <Bell size={18} />
+          <span className="notif-dot" />
+        </button>
+        <button type="button" className="icon-btn" aria-label="Настройки">
+          <Settings size={18} />
+        </button>
       </div>
     </header>
   );
