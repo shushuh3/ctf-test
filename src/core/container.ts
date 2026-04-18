@@ -11,6 +11,7 @@ import { db } from '@/core/db/client';
 import { makeAuditResultsService } from '@/features/audit-results/service/audit-results.service';
 import { makeAuditLogService } from '@/features/audit-log/service/audit-log.service';
 import { makeUsersService } from '@/features/users/service/users.service';
+import { makeDashboardService } from '@/features/dashboard/service/dashboard.service';
 
 const auditLog = makeAuditLogService({ db });
 
@@ -19,4 +20,5 @@ export const container = {
   auditLog,
   auditResults: makeAuditResultsService({ db, auditLog }),
   users: makeUsersService({ db, auditLog }),
+  dashboard: makeDashboardService({ db }),
 } as const;
