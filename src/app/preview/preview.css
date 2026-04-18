@@ -1,22 +1,32 @@
-/* Scoped design tokens. Минималистичный монохром с единственным приглушённым акцентом. */
+/* Scoped tokens + Manrope как основной шрифт. */
 .preview-root {
   /* Нейтральная шкала */
   --canvas: #fafaf9;
   --surface: #ffffff;
-  --surface-hover: #f5f4f1;
+  --surface-hover: #f4f3ef;
   --border: #ecebe6;
-  --border-strong: #dedcd4;
+  --border-strong: #d8d6cf;
 
-  --text-primary: #1a1814;
-  --text-secondary: #6e6b64;
-  --text-meta: #a9a39a;
+  --text-primary: #141311;
+  --text-secondary: #5c5a54;
+  --text-meta: #9a958c;
 
-  /* Единственный акцент — приглушённый оранжевый.
-     Используется ТОЛЬКО для активного nav + монохромного CRITICAL маркера. */
+  /* Приглушённый оранжевый — используется для: активный nav, CRITICAL severity, индикаторы. */
   --accent: #de6a1b;
   --accent-soft: #fff5ec;
+  --accent-border: #f2d9bf;
 
-  --radius-card: 10px;
+  /* Мягкие тона для status-чипов (без насыщения) */
+  --tone-gray-bg: #f2f1ec;
+  --tone-gray-fg: #5c5a54;
+  --tone-amber-bg: #fdf4e3;
+  --tone-amber-fg: #8a6020;
+  --tone-green-bg: #eef6ea;
+  --tone-green-fg: #3d6a2d;
+  --tone-blue-bg: #eef2f7;
+  --tone-blue-fg: #3e5673;
+
+  --radius-card: 12px;
   --radius-button: 8px;
   --sidebar-w: 252px;
   --topbar-h: 56px;
@@ -25,14 +35,19 @@
   color: var(--text-primary);
   display: grid;
   grid-template-columns: var(--sidebar-w) 1fr;
+  font-family:
+    var(--font-manrope),
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
   font-size: 14px;
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: 500;
+  letter-spacing: -0.003em;
   -webkit-font-smoothing: antialiased;
-}
-
-.preview-root * {
-  font-weight: 400;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .preview-root .preview-main {
@@ -45,12 +60,13 @@
   padding: 24px 32px 48px;
 }
 
-/* Универсальный микро-ярлык (breadcrumbs, column headers) */
+/* SMALL-CAPS ярлыки */
 .preview-root .label-micro {
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-meta);
+  font-weight: 600;
 }
 
 /* ——— Pills ——— */
@@ -58,7 +74,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 12px;
+  padding: 7px 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius-button);
   font-size: 13px;
@@ -66,31 +82,34 @@
   background: var(--surface);
   white-space: nowrap;
   cursor: pointer;
+  font-weight: 500;
   transition:
     border-color 0.15s ease,
-    color 0.15s ease;
+    color 0.15s ease,
+    background 0.15s ease;
 }
 .preview-root .pill:hover {
   border-color: var(--border-strong);
+  background: var(--surface-hover);
 }
 .preview-root .pill:disabled {
   color: var(--text-meta);
   cursor: default;
 }
 
-/* Path bar — адресная строка страницы (можно вбить другой путь и Enter) */
+/* Path bar */
 .preview-root .path-bar {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 14px;
+  padding: 7px 14px;
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: 999px;
   font-family: ui-monospace, 'SF Mono', monospace;
   font-size: 13px;
   color: var(--text-secondary);
-  min-width: 340px;
+  min-width: 320px;
 }
 .preview-root .path-bar input {
   border: 0;
@@ -134,6 +153,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-meta);
+  font-weight: 600;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
 }
@@ -163,7 +183,7 @@
 
 .preview-root table.aud tbody tr {
   cursor: pointer;
-  transition: background 0.18s ease;
+  transition: background 0.15s ease;
 }
 .preview-root table.aud tbody tr:hover {
   background: var(--surface-hover);
@@ -177,49 +197,96 @@
   align-items: center;
   color: var(--text-meta);
   margin-left: 12px;
-  transition: color 0.18s ease;
+  transition: color 0.15s ease;
 }
 
-.preview-root .num {
-  font-variant-numeric: tabular-nums;
+.preview-root .row-title {
+  font-weight: 600;
+  color: var(--text-primary);
 }
-
-/* Уточняющий текст под заголовком строки */
 .preview-root .row-meta {
   color: var(--text-meta);
   font-size: 12.5px;
   margin-top: 4px;
+  font-weight: 500;
+}
+.preview-root .num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
 }
 
-/* Monochrome dot marker */
-.preview-root .mark-dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
+/* ——— Severity chip (мягкий tone) ——— */
+.preview-root .sev-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 10px;
   border-radius: 999px;
-  background: var(--text-secondary);
-  vertical-align: middle;
-  margin-right: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: var(--tone-gray-bg);
+  color: var(--tone-gray-fg);
 }
-.preview-root .mark-LOW {
-  background: #c5c2b9;
+.preview-root .sev-chip .d {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
 }
-.preview-root .mark-MEDIUM {
-  background: #a9a39a;
+.preview-root .sev-LOW {
+  background: var(--tone-gray-bg);
+  color: var(--tone-gray-fg);
 }
-.preview-root .mark-HIGH {
-  background: #6e6b64;
+.preview-root .sev-MEDIUM {
+  background: var(--tone-amber-bg);
+  color: var(--tone-amber-fg);
 }
-.preview-root .mark-CRITICAL {
-  background: var(--accent);
+.preview-root .sev-HIGH {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.preview-root .sev-CRITICAL {
+  background: #fce4de;
+  color: #9c2a15;
 }
 
-/* Status — монохромный, отличие через кепс */
-.preview-root .status-label {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+/* ——— Status chip ——— */
+.preview-root .st-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 10px;
+  border-radius: 999px;
   font-size: 11px;
-  color: var(--text-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.preview-root .st-chip .d {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+.preview-root .st-NEW {
+  background: var(--tone-blue-bg);
+  color: var(--tone-blue-fg);
+}
+.preview-root .st-IN_PROGRESS {
+  background: var(--tone-amber-bg);
+  color: var(--tone-amber-fg);
+}
+.preview-root .st-RESOLVED {
+  background: var(--tone-green-bg);
+  color: var(--tone-green-fg);
+}
+.preview-root .st-CONFIRMED {
+  background: var(--tone-green-bg);
+  color: var(--tone-green-fg);
+}
+.preview-root .st-REJECTED {
+  background: var(--tone-gray-bg);
+  color: var(--tone-gray-fg);
 }
 
 /* ——— Sidebar ——— */
@@ -258,40 +325,56 @@
   background: var(--surface);
 }
 .preview-root .brand-wordmark {
-  font-size: 14px;
+  font-size: 14.5px;
+  font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
 .preview-root .sidebar-section {
-  padding: 16px 10px 6px;
-  font-size: 10px;
+  padding: 18px 10px 6px;
+  font-size: 10.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-meta);
+  font-weight: 700;
 }
 .preview-root .nav-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 12px;
+  padding: 9px 12px;
   border-radius: 8px;
-  font-size: 13.5px;
+  font-size: 14px;
   color: var(--text-primary);
   text-decoration: none;
+  font-weight: 500;
   transition:
     background 0.15s ease,
     color 0.15s ease;
+  position: relative;
 }
 .preview-root .nav-item:hover {
   background: var(--surface-hover);
 }
 .preview-root .nav-item[data-active='true'] {
-  color: var(--accent);
-  background: var(--accent-soft);
+  background: var(--surface-hover);
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.preview-root .nav-item[data-active='true']::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  transform: translateY(-50%);
 }
 .preview-root .nav-item[data-active='true'] svg {
-  color: var(--accent);
+  color: var(--text-primary);
   opacity: 1;
 }
 .preview-root .nav-item[data-disabled='true'] {
@@ -299,7 +382,7 @@
   pointer-events: none;
 }
 .preview-root .nav-item svg {
-  opacity: 0.7;
+  opacity: 0.65;
   flex-shrink: 0;
 }
 
@@ -317,30 +400,44 @@
   background: var(--surface);
 }
 .preview-root .avatar {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   background: var(--surface-hover);
   color: var(--text-secondary);
   display: grid;
   place-items: center;
   font-size: 12px;
+  font-weight: 700;
   flex-shrink: 0;
 }
+.preview-root .user-name {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.preview-root .user-meta {
+  font-weight: 500;
+}
+
 .preview-root .signout-btn {
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
   font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 6px 10px;
   border-radius: 6px;
-  transition: color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+  font-family: inherit;
 }
 .preview-root .signout-btn:hover {
   color: var(--text-primary);
+  border-color: var(--border-strong);
 }
 
 /* ——— Topbar ——— */
@@ -393,6 +490,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-meta);
+  font-weight: 600;
 }
 .preview-root .crumbs .sep {
   color: var(--border-strong);
@@ -422,14 +520,16 @@
   gap: 6px;
 }
 .preview-root .page-head h1 {
-  font-size: 26px;
-  letter-spacing: -0.015em;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1.15;
   color: var(--text-primary);
 }
 .preview-root .page-head .subtle {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 13.5px;
+  font-weight: 500;
 }
 
 .preview-root .head-actions {
@@ -441,13 +541,15 @@
 /* Счётчик перед таблицей */
 .preview-root .summary-line {
   display: flex;
-  gap: 22px;
+  gap: 26px;
   padding: 0 4px 14px;
   color: var(--text-secondary);
   font-size: 13px;
+  font-weight: 500;
 }
 .preview-root .summary-line strong {
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
   margin-left: 6px;
+  font-weight: 700;
 }

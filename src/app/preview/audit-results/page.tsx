@@ -102,22 +102,25 @@ export default async function PreviewListPage({ searchParams }: PageProps) {
               return (
                 <ClickableRow key={r.id} href={`/audit-results/${r.id}`}>
                   <td>
-                    <div>{found.date}</div>
+                    <div className="row-title">{found.date}</div>
                     <div className="row-meta">в {found.time}</div>
                   </td>
                   <td>
-                    <div>{r.title}</div>
+                    <div className="row-title">{r.title}</div>
                     <div className="row-meta">{r.category}</div>
                   </td>
                   <td style={{ color: 'var(--text-secondary)' }}>{r.system.name}</td>
                   <td>
-                    <span className={`mark-dot mark-${r.severity}`} />
-                    <span style={{ color: 'var(--text-secondary)' }}>
+                    <span className={`sev-chip sev-${r.severity}`}>
+                      <span className="d" />
                       {SEVERITY_LABEL[r.severity]}
                     </span>
                   </td>
                   <td>
-                    <span className="status-label">{STATUS_LABEL[r.status]}</span>
+                    <span className={`st-chip st-${r.status}`}>
+                      <span className="d" />
+                      {STATUS_LABEL[r.status]}
+                    </span>
                   </td>
                   <td style={{ color: 'var(--text-secondary)' }}>{r.assignee?.name ?? '—'}</td>
                   <td style={{ textAlign: 'right' }}>

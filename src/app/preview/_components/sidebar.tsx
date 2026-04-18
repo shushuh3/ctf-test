@@ -79,9 +79,8 @@ export function PreviewSidebar({ role, name, email }: { role: Role; name: string
         <div className="avatar">{initialsOf(name)}</div>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div
+            className="user-name"
             style={{
-              fontWeight: 700,
-              fontSize: 13.5,
               lineHeight: 1.2,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -91,9 +90,10 @@ export function PreviewSidebar({ role, name, email }: { role: Role; name: string
             {name}
           </div>
           <div
+            className="user-meta"
             style={{
               fontSize: 11,
-              color: '#9aa0a6',
+              color: 'var(--text-meta)',
               lineHeight: 1.3,
               marginTop: 2,
               overflow: 'hidden',
