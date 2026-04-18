@@ -14,6 +14,6 @@ export default auth(function proxy(req) {
 });
 
 export const config = {
-  // Всё, кроме api/*, статики, _next/* и /login.
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|login).*)'],
+  // Всё, кроме api/*, статики, _next/*, /login и /docs (Swagger UI публичный).
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|login|docs).*)'],
 };
