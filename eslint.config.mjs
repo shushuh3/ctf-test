@@ -17,6 +17,8 @@ const eslintConfig = defineConfig([
     'playwright-report/**',
     'test-results/**',
     'src/generated/**',
+    // k6 scripts run in the k6 runtime, not Node.js — skip Next.js linter here.
+    'tests/load/**',
   ]),
 ]);
 
