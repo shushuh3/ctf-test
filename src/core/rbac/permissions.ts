@@ -64,3 +64,13 @@ export const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Action>> = {
 export function canDo(role: Role, action: Action): boolean {
   return ROLE_PERMISSIONS[role].has(action);
 }
+
+// Pure helper — используется и в server components, и в UI (без зависимости от auth()).
+export function sessionCan(
+  session: { user?: { role?: Role | undefined } } | null | undefined,
+  action: Action,
+): boolean {
+  const role = session?.user?.role;
+  if (!role) return false;
+  return canDo(role, action);
+}

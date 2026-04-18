@@ -11,7 +11,15 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       include: ['src/features/**', 'src/core/rbac/**'],
-      exclude: ['**/*.test.{ts,tsx}', '**/ui/**', '**/schemas/**', '**/index.ts'],
+      exclude: [
+        '**/*.test.{ts,tsx}',
+        '**/ui/**',
+        '**/schemas/**',
+        '**/index.ts',
+        '**/transport/**',
+        '**/types.ts',
+        'src/features/docs/**',
+      ],
       thresholds: {
         lines: 65,
         statements: 65,

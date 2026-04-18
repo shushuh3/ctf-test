@@ -26,10 +26,5 @@ export async function requireAction(action: Action): Promise<Session> {
   return session;
 }
 
-/**
- * Boolean-хелпер для UI (показывать/скрывать кнопки).
- */
-export function sessionCan(session: Session | null, action: Action): boolean {
-  if (!session?.user) return false;
-  return canDo(session.user.role, action);
-}
+// sessionCan перенесён в ./permissions (pure, без зависимости от auth()).
+export { sessionCan } from './permissions';
