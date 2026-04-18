@@ -93,7 +93,7 @@ export default async function PreviewListPage({ searchParams }: PageProps) {
               <th>Критичность</th>
               <th>Статус</th>
               <th>Ответственный</th>
-              <th style={{ textAlign: 'right' }}>Риск</th>
+              <th className="col-right">Риск</th>
             </tr>
           </thead>
           <tbody>
@@ -123,7 +123,7 @@ export default async function PreviewListPage({ searchParams }: PageProps) {
                     </span>
                   </td>
                   <td style={{ color: 'var(--text-secondary)' }}>{r.assignee?.name ?? '—'}</td>
-                  <td style={{ textAlign: 'right' }}>
+                  <td className="col-right">
                     <span className="num">{r.riskScore}</span>
                     <span className="row-arrow">
                       <ChevronRight size={15} />
