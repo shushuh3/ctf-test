@@ -1,0 +1,3 @@
+import { auditResultsController } from '@/features/audit-results/transport/audit-results.controller';
+
+export const PATCH = auditResultsController.changeSeverity;
