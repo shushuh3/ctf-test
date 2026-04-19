@@ -1,7 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { Dropdown, type DropdownOption } from '@/shared/design/dropdown';
 import { calcSla, type SlaInput, type SlaResult } from '../sla/sla';
+
+const SEVERITY_OPTIONS: DropdownOption[] = [
+  { value: 'LOW', label: 'Низкая' },
+  { value: 'MEDIUM', label: 'Средняя' },
+  { value: 'HIGH', label: 'Высокая' },
+  { value: 'CRITICAL', label: 'Критическая' },
+];
 
 const STATUS_LABEL: Record<SlaResult['status'], string> = {
   ON_TIME: 'В срок',
@@ -23,13 +31,7 @@ export function SlaCalculatorForm() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    setResult(
-      calcSla({
-        foundAt: new Date(foundAt),
-        severity,
-        normativeDays,
-      }),
-    );
+    setResult(calcSla({ foundAt: new Date(foundAt), severity, normativeDays }));
   }
 
   return (
@@ -46,15 +48,12 @@ export function SlaCalculatorForm() {
       </div>
       <div className="field">
         <label>Критичность</label>
-        <select
+        <Dropdown
           value={severity}
-          onChange={(e) => setSeverity(e.target.value as SlaInput['severity'])}
-        >
-          <option value="LOW">Низкая</option>
-          <option value="MEDIUM">Средняя</option>
-          <option value="HIGH">Высокая</option>
-          <option value="CRITICAL">Критическая</option>
-        </select>
+          onChange={(v) => setSeverity(v as SlaInput['severity'])}
+          options={SEVERITY_OPTIONS}
+          ariaLabel="Критичность"
+        />
       </div>
       <div className="field">
         <label htmlFor="normativeDays">Нормативный срок (дней)</label>

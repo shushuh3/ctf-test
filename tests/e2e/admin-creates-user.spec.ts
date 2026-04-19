@@ -12,11 +12,13 @@ test('Admin creates an L3 user and that user can log in', async ({ page }) => {
   await expect(page).toHaveURL(/\/users/);
   await expect(page.getByRole('heading', { name: 'Пользователи' })).toBeVisible();
 
-  // Native form
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Имя').fill('E2E User');
   await page.getByLabel('Пароль').fill(password);
-  await page.locator('select[name="role"]').selectOption('L3');
+
+  // Выбор роли — кастомный dropdown (role=combobox с aria-label)
+  await page.getByRole('combobox', { name: 'Роль' }).first().click();
+  await page.getByRole('option', { name: 'L3' }).click();
 
   await page.getByRole('button', { name: 'Создать' }).click();
   await expect(page.getByText('Пользователь создан')).toBeVisible();

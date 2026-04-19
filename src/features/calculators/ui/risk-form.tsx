@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Dropdown, type DropdownOption } from '@/shared/design/dropdown';
 import {
   calcRisk,
   type CompensatingControls,
@@ -11,29 +12,29 @@ import {
   type Severity,
 } from '../risk/risk';
 
-const PROB_LABEL: Record<RiskProbability, string> = {
-  LOW: 'Низкая',
-  MEDIUM: 'Средняя',
-  HIGH: 'Высокая',
-  VERY_HIGH: 'Очень высокая',
-};
-const IMPACT_LABEL: Record<RiskImpact, string> = {
-  LOW: 'Низкое',
-  MEDIUM: 'Среднее',
-  HIGH: 'Высокое',
-  CRITICAL: 'Критическое',
-};
-const COMP_LABEL: Record<CompensatingControls, string> = {
-  NONE: 'Отсутствуют',
-  PARTIAL: 'Частичные',
-  FULL: 'Полные',
-};
-const SEV_LABEL: Record<Severity, string> = {
-  LOW: 'Низкая',
-  MEDIUM: 'Средняя',
-  HIGH: 'Высокая',
-  CRITICAL: 'Критическая',
-};
+const SEVERITY_OPTIONS: DropdownOption[] = [
+  { value: 'LOW', label: 'Низкая' },
+  { value: 'MEDIUM', label: 'Средняя' },
+  { value: 'HIGH', label: 'Высокая' },
+  { value: 'CRITICAL', label: 'Критическая' },
+];
+const PROB_OPTIONS: DropdownOption[] = [
+  { value: 'LOW', label: 'Низкая' },
+  { value: 'MEDIUM', label: 'Средняя' },
+  { value: 'HIGH', label: 'Высокая' },
+  { value: 'VERY_HIGH', label: 'Очень высокая' },
+];
+const IMPACT_OPTIONS: DropdownOption[] = [
+  { value: 'LOW', label: 'Низкое' },
+  { value: 'MEDIUM', label: 'Среднее' },
+  { value: 'HIGH', label: 'Высокое' },
+  { value: 'CRITICAL', label: 'Критическое' },
+];
+const COMP_OPTIONS: DropdownOption[] = [
+  { value: 'NONE', label: 'Отсутствуют' },
+  { value: 'PARTIAL', label: 'Частичные' },
+  { value: 'FULL', label: 'Полные' },
+];
 
 const LEVEL_CHIP: Record<RiskResult['level'], string> = {
   LOW: 'sev-LOW',
@@ -60,62 +61,41 @@ export function RiskCalculatorForm() {
     <form onSubmit={submit} className="grid-2">
       <div className="field">
         <label>Критичность</label>
-        <select
+        <Dropdown
           value={values.severity}
-          onChange={(e) => setValues((p) => ({ ...p, severity: e.target.value as Severity }))}
-        >
-          {(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const).map((s) => (
-            <option key={s} value={s}>
-              {SEV_LABEL[s]}
-            </option>
-          ))}
-        </select>
+          onChange={(v) => setValues((p) => ({ ...p, severity: v as Severity }))}
+          options={SEVERITY_OPTIONS}
+          ariaLabel="Критичность"
+        />
       </div>
       <div className="field">
         <label>Вероятность</label>
-        <select
+        <Dropdown
           value={values.probability}
-          onChange={(e) =>
-            setValues((p) => ({ ...p, probability: e.target.value as RiskProbability }))
-          }
-        >
-          {(['LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'] as const).map((s) => (
-            <option key={s} value={s}>
-              {PROB_LABEL[s]}
-            </option>
-          ))}
-        </select>
+          onChange={(v) => setValues((p) => ({ ...p, probability: v as RiskProbability }))}
+          options={PROB_OPTIONS}
+          ariaLabel="Вероятность"
+        />
       </div>
       <div className="field">
         <label>Влияние</label>
-        <select
+        <Dropdown
           value={values.impact}
-          onChange={(e) => setValues((p) => ({ ...p, impact: e.target.value as RiskImpact }))}
-        >
-          {(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const).map((s) => (
-            <option key={s} value={s}>
-              {IMPACT_LABEL[s]}
-            </option>
-          ))}
-        </select>
+          onChange={(v) => setValues((p) => ({ ...p, impact: v as RiskImpact }))}
+          options={IMPACT_OPTIONS}
+          ariaLabel="Влияние"
+        />
       </div>
       <div className="field">
         <label>Компенсирующие меры</label>
-        <select
+        <Dropdown
           value={values.compensatingControls}
-          onChange={(e) =>
-            setValues((p) => ({
-              ...p,
-              compensatingControls: e.target.value as CompensatingControls,
-            }))
+          onChange={(v) =>
+            setValues((p) => ({ ...p, compensatingControls: v as CompensatingControls }))
           }
-        >
-          {(['NONE', 'PARTIAL', 'FULL'] as const).map((s) => (
-            <option key={s} value={s}>
-              {COMP_LABEL[s]}
-            </option>
-          ))}
-        </select>
+          options={COMP_OPTIONS}
+          ariaLabel="Компенсирующие меры"
+        />
       </div>
       <div style={{ gridColumn: '1 / -1' }}>
         <button type="submit" className="pill pill-accent">

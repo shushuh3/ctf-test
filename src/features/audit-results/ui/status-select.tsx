@@ -3,7 +3,13 @@
 import { useState, useTransition } from 'react';
 import { Status } from '@/generated/prisma/enums';
 import { STATUS_LABEL } from '@/shared/design/chips';
+import { Dropdown, type DropdownOption } from '@/shared/design/dropdown';
 import { updateStatusAction } from '@/app/(app)/audit-results/[id]/actions';
+
+const options: DropdownOption[] = Object.values(Status).map((s) => ({
+  value: s,
+  label: STATUS_LABEL[s],
+}));
 
 export function StatusSelect({ id, current }: { id: string; current: Status }) {
   const [value, setValue] = useState<Status>(current);
@@ -23,18 +29,14 @@ export function StatusSelect({ id, current }: { id: string; current: Status }) {
   return (
     <div className="stack-sm">
       <div className="row">
-        <div className="field" style={{ width: 180 }}>
-          <select
+        <div style={{ width: 200 }}>
+          <Dropdown
             value={value}
-            onChange={(e) => setValue(e.target.value as Status)}
+            onChange={(v) => setValue(v as Status)}
+            options={options}
+            ariaLabel="Статус"
             disabled={pending}
-          >
-            {Object.values(Status).map((s) => (
-              <option key={s} value={s}>
-                {STATUS_LABEL[s]}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         <button
           type="button"

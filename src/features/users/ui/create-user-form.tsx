@@ -2,20 +2,26 @@
 
 import { useRef, useState, useTransition } from 'react';
 import { Role } from '@/generated/prisma/enums';
+import { Dropdown, type DropdownOption } from '@/shared/design/dropdown';
 import { createUserAction } from '@/app/(app)/users/actions';
+
+const ROLE_OPTIONS: DropdownOption[] = Object.values(Role).map((r) => ({ value: r, label: r }));
 
 export function CreateUserForm() {
   const ref = useRef<HTMLFormElement>(null);
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
+  const [role, setRole] = useState<string>('L1');
 
   function handle(fd: FormData) {
     setMsg(null);
+    fd.set('role', role);
     start(async () => {
       const res = await createUserAction(fd);
       if (res.ok) {
         setMsg({ kind: 'ok', text: 'Пользователь создан' });
         ref.current?.reset();
+        setRole('L1');
       } else {
         setMsg({ kind: 'err', text: res.error });
       }
@@ -38,13 +44,13 @@ export function CreateUserForm() {
       </div>
       <div className="field">
         <label>Роль</label>
-        <select name="role" defaultValue="L1">
-          {Object.values(Role).map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
+        <Dropdown
+          value={role}
+          onChange={setRole}
+          options={ROLE_OPTIONS}
+          name="role"
+          ariaLabel="Роль"
+        />
       </div>
       <div className="field" style={{ alignSelf: 'flex-end' }}>
         <label style={{ visibility: 'hidden' }}>.</label>

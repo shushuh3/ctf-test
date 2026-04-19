@@ -12,12 +12,13 @@ test('L2 changes status + adds comment, both appear in history', async ({ page }
   // Блок "Действия" виден для L2
   await expect(page.getByText('Действия', { exact: true })).toBeVisible();
 
-  // Смена статуса: первый <select> в блоке действий — это statusSelect.
-  // Выбираем статус, отличный от текущего, чтобы "Сохранить" стала enabled.
-  const statusSelect = page.locator('select').first();
-  const current = await statusSelect.inputValue();
-  const next = current === 'NEW' ? 'IN_PROGRESS' : 'NEW';
-  await statusSelect.selectOption(next);
+  // Кастомный dropdown для статуса — первый combobox на странице.
+  const statusCombobox = page.getByRole('combobox', { name: 'Статус' });
+  const currentLabel = (await statusCombobox.innerText()).trim();
+  await statusCombobox.click();
+  // Выбираем опцию отличную от текущей
+  const target = currentLabel === 'Новый' ? 'В работе' : 'Новый';
+  await page.getByRole('option', { name: target }).click();
   await page.getByRole('button', { name: 'Сохранить' }).first().click();
   await page.waitForLoadState('networkidle');
 

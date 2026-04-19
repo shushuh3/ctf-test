@@ -1,4 +1,4 @@
-import { ChevronRight, Download, Filter } from 'lucide-react';
+import { ChevronRight, Download } from 'lucide-react';
 import { container } from '@/core/container';
 import { requireAction } from '@/core/rbac/require';
 import { ListQuerySchema } from '@/features/audit-results/schemas';
@@ -64,9 +64,6 @@ export default async function AuditResultsPage({ searchParams }: PageProps) {
         <div className="head-actions">
           <button type="button" className="pill" disabled>
             <Download size={14} /> Экспорт
-          </button>
-          <button type="button" className="pill">
-            <Filter size={14} /> Фильтры
           </button>
         </div>
       </div>

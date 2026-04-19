@@ -2,7 +2,10 @@
 
 import { useState, useTransition } from 'react';
 import { Role } from '@/generated/prisma/enums';
+import { Dropdown, type DropdownOption } from '@/shared/design/dropdown';
 import { changeRoleAction, toggleActiveAction } from '@/app/(app)/users/actions';
+
+const ROLE_OPTIONS: DropdownOption[] = Object.values(Role).map((r) => ({ value: r, label: r }));
 
 export function UserRowControls({
   id,
@@ -40,19 +43,14 @@ export function UserRowControls({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
       <div className="row" style={{ gap: 6 }}>
-        <div className="field" style={{ width: 100 }}>
-          <select
+        <div style={{ width: 110 }}>
+          <Dropdown
             value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value as Role)}
+            onChange={(v) => setSelectedRole(v as Role)}
+            options={ROLE_OPTIONS}
+            ariaLabel="Роль"
             disabled={pending || isSelf}
-            style={{ padding: '6px 8px', fontSize: 12 }}
-          >
-            {Object.values(Role).map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         <button
           type="button"

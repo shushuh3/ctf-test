@@ -3,7 +3,13 @@
 import { useState, useTransition } from 'react';
 import { Severity } from '@/generated/prisma/enums';
 import { SEVERITY_LABEL } from '@/shared/design/chips';
+import { Dropdown, type DropdownOption } from '@/shared/design/dropdown';
 import { changeSeverityAction } from '@/app/(app)/audit-results/[id]/actions';
+
+const options: DropdownOption[] = Object.values(Severity).map((s) => ({
+  value: s,
+  label: SEVERITY_LABEL[s],
+}));
 
 export function SeveritySelect({ id, current }: { id: string; current: Severity }) {
   const [value, setValue] = useState<Severity>(current);
@@ -23,18 +29,14 @@ export function SeveritySelect({ id, current }: { id: string; current: Severity 
   return (
     <div className="stack-sm">
       <div className="row">
-        <div className="field" style={{ width: 180 }}>
-          <select
+        <div style={{ width: 200 }}>
+          <Dropdown
             value={value}
-            onChange={(e) => setValue(e.target.value as Severity)}
+            onChange={(v) => setValue(v as Severity)}
+            options={options}
+            ariaLabel="Критичность"
             disabled={pending}
-          >
-            {Object.values(Severity).map((s) => (
-              <option key={s} value={s}>
-                {SEVERITY_LABEL[s]}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         <button
           type="button"

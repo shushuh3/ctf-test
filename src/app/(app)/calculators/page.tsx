@@ -1,7 +1,5 @@
 import { requireAction } from '@/core/rbac/require';
-import { RiskCalculatorForm } from '@/features/calculators/ui/risk-form';
-import { SlaCalculatorForm } from '@/features/calculators/ui/sla-form';
-import { ComplianceCalculatorForm } from '@/features/calculators/ui/compliance-form';
+import { CalculatorTabs } from '@/features/calculators/ui/calculator-tabs';
 
 export default async function CalculatorsPage() {
   await requireAction('calculators.use');
@@ -17,27 +15,7 @@ export default async function CalculatorsPage() {
         </div>
       </div>
 
-      <div className="grid-2">
-        <div className="surface surface-padded">
-          <h2 className="card-title">Калькулятор риска</h2>
-          <div style={{ marginTop: 14 }}>
-            <RiskCalculatorForm />
-          </div>
-        </div>
-        <div className="surface surface-padded">
-          <h2 className="card-title">Калькулятор SLA</h2>
-          <div style={{ marginTop: 14 }}>
-            <SlaCalculatorForm />
-          </div>
-        </div>
-      </div>
-
-      <div className="surface surface-padded">
-        <h2 className="card-title">Калькулятор соответствия</h2>
-        <div style={{ marginTop: 14 }}>
-          <ComplianceCalculatorForm />
-        </div>
-      </div>
+      <CalculatorTabs />
     </div>
   );
 }
