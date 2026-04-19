@@ -12,29 +12,29 @@
 
 /* Ромб через clip-path: прямоугольник, обрезанный в diamond */
 .auth-diamond {
-  width: min(640px, 92vmin);
-  height: min(640px, 92vmin);
+  width: min(880px, 96vmin);
+  height: min(880px, 96vmin);
   position: relative;
   background: #ffffff;
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-  filter: drop-shadow(0 20px 40px rgba(80, 20, 0, 0.25));
+  filter: drop-shadow(0 24px 48px rgba(80, 20, 0, 0.28));
   display: grid;
   place-items: center;
 }
 
 /* Содержимое внутри ромба — вписанный квадрат */
 .auth-inner {
-  width: 62%;
-  max-width: 360px;
+  width: 56%;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 22px;
+  gap: 26px;
 }
 
 .auth-avatar {
-  width: 96px;
-  height: 96px;
+  width: 120px;
+  height: 120px;
   border-radius: 999px;
   background: #de6a1b;
   display: grid;

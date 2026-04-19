@@ -8,7 +8,7 @@ export default function LoginPage() {
       <div className="auth-diamond">
         <div className="auth-inner">
           <div className="auth-avatar" aria-hidden>
-            <UserRound size={56} strokeWidth={1.6} />
+            <UserRound size={68} strokeWidth={1.5} />
           </div>
           <LoginForm />
         </div>
