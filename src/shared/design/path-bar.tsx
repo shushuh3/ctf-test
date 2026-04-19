@@ -3,10 +3,6 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-/**
- * Адресная строка — показывает текущий путь, позволяет набрать другой и Enter-нуться.
- * Key={pathname} пересоздаёт state при смене маршрута — настоящий эффект на pathname не нужен.
- */
 function PathBarInner({ initial }: { initial: string }) {
   const router = useRouter();
   const [value, setValue] = useState(initial);

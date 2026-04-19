@@ -8,27 +8,20 @@ test('Admin creates an L3 user and that user can log in', async ({ page }) => {
   await login(page, 'admin@example.com');
   await expect(page).toHaveURL(/\/audit-results/);
 
-  // В навбаре должна быть ссылка "Пользователи"
   await page.getByRole('link', { name: 'Пользователи' }).click();
   await expect(page).toHaveURL(/\/users/);
   await expect(page.getByRole('heading', { name: 'Пользователи' })).toBeVisible();
 
-  // Заполняем форму создания
+  // Native form
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Имя').fill('E2E User');
   await page.getByLabel('Пароль').fill(password);
-  // Role select: дефолт L1 — меняем на L3
-  const roleCombobox = page.getByRole('combobox').first();
-  await roleCombobox.click();
-  await page.getByRole('option', { name: 'L3' }).click();
+  await page.locator('select[name="role"]').selectOption('L3');
 
   await page.getByRole('button', { name: 'Создать' }).click();
   await expect(page.getByText('Пользователь создан')).toBeVisible();
-
-  // Новый пользователь должен появиться в таблице
   await expect(page.getByText(email)).toBeVisible();
 
-  // Выходим и логинимся под новым пользователем
   await signOut(page);
   await login(page, email, password);
   await expect(page).toHaveURL(/\/audit-results/);

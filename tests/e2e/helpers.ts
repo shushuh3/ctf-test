@@ -9,6 +9,7 @@ export async function login(page: Page, email: string, password = 'Password123!'
 }
 
 export async function signOut(page: Page) {
+  // Кнопка выхода в sidebar-user: title="Выйти", содержимое — иконка ⎋
   await page.getByRole('button', { name: 'Выйти' }).click();
   await page.waitForURL('**/login');
 }

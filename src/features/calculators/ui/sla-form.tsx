@@ -1,17 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { calcSla, type SlaInput, type SlaResult } from '../sla/sla';
 
 const STATUS_LABEL: Record<SlaResult['status'], string> = {
@@ -19,10 +8,10 @@ const STATUS_LABEL: Record<SlaResult['status'], string> = {
   AT_RISK: 'Под угрозой',
   OVERDUE: 'Просрочено',
 };
-const STATUS_TONE: Record<SlaResult['status'], string> = {
-  ON_TIME: 'bg-emerald-100 text-emerald-800',
-  AT_RISK: 'bg-amber-100 text-amber-800',
-  OVERDUE: 'bg-red-100 text-red-800',
+const STATUS_CHIP: Record<SlaResult['status'], string> = {
+  ON_TIME: 'st-RESOLVED',
+  AT_RISK: 'st-IN_PROGRESS',
+  OVERDUE: 'sev-CRITICAL',
 };
 
 export function SlaCalculatorForm() {
@@ -44,12 +33,10 @@ export function SlaCalculatorForm() {
   }
 
   return (
-    <form onSubmit={submit} className="grid grid-cols-1 gap-3 md:grid-cols-3">
-      <div>
-        <Label htmlFor="foundAt" className="text-xs">
-          Дата обнаружения
-        </Label>
-        <Input
+    <form onSubmit={submit} className="grid-3">
+      <div className="field">
+        <label htmlFor="foundAt">Дата обнаружения</label>
+        <input
           id="foundAt"
           type="date"
           value={foundAt}
@@ -57,25 +44,21 @@ export function SlaCalculatorForm() {
           required
         />
       </div>
-      <div>
-        <Label className="text-xs">Критичность</Label>
-        <Select value={severity} onValueChange={(v) => setSeverity(v as SlaInput['severity'])}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="LOW">Низкая</SelectItem>
-            <SelectItem value="MEDIUM">Средняя</SelectItem>
-            <SelectItem value="HIGH">Высокая</SelectItem>
-            <SelectItem value="CRITICAL">Критическая</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="field">
+        <label>Критичность</label>
+        <select
+          value={severity}
+          onChange={(e) => setSeverity(e.target.value as SlaInput['severity'])}
+        >
+          <option value="LOW">Низкая</option>
+          <option value="MEDIUM">Средняя</option>
+          <option value="HIGH">Высокая</option>
+          <option value="CRITICAL">Критическая</option>
+        </select>
       </div>
-      <div>
-        <Label htmlFor="normativeDays" className="text-xs">
-          Нормативный срок (дней)
-        </Label>
-        <Input
+      <div className="field">
+        <label htmlFor="normativeDays">Нормативный срок (дней)</label>
+        <input
           id="normativeDays"
           type="number"
           min={1}
@@ -85,22 +68,25 @@ export function SlaCalculatorForm() {
           required
         />
       </div>
-      <div className="md:col-span-3">
-        <Button type="submit">Рассчитать</Button>
+      <div style={{ gridColumn: '1 / -1' }}>
+        <button type="submit" className="pill pill-accent">
+          Рассчитать
+        </button>
       </div>
       {result && (
-        <div className="space-y-2 rounded-md border border-neutral-200 bg-neutral-50 p-4 text-sm md:col-span-3">
+        <div className="surface surface-padded" style={{ gridColumn: '1 / -1', marginTop: 4 }}>
           <Row label="Дедлайн">{new Date(result.deadline).toISOString().slice(0, 10)}</Row>
           <Row label="Просрочка (дней)">
-            <span className="tabular-nums">{result.overdueDays}</span>
+            <span className="num">{result.overdueDays}</span>
           </Row>
           <Row label="Осталось (дней)">
-            <span className="tabular-nums">{result.remainingDays}</span>
+            <span className="num">{result.remainingDays}</span>
           </Row>
           <Row label="Статус SLA">
-            <Badge variant="outline" className={STATUS_TONE[result.status]}>
+            <span className={`st-chip ${STATUS_CHIP[result.status]}`}>
+              <span className="d" />
               {STATUS_LABEL[result.status]}
-            </Badge>
+            </span>
           </Row>
         </div>
       )}
@@ -110,9 +96,9 @@ export function SlaCalculatorForm() {
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-neutral-600">{label}</span>
-      <span>{children}</span>
+    <div className="attr-row">
+      <span className="attr-label">{label}</span>
+      <span className="attr-value">{children}</span>
     </div>
   );
 }

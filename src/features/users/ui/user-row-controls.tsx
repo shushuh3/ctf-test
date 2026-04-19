@@ -2,14 +2,6 @@
 
 import { useState, useTransition } from 'react';
 import { Role } from '@/generated/prisma/enums';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
 import { changeRoleAction, toggleActiveAction } from '@/app/(app)/users/actions';
 
 export function UserRowControls({
@@ -46,45 +38,45 @@ export function UserRowControls({
   }
 
   return (
-    <div className="flex flex-col items-end gap-1">
-      <div className="flex items-center gap-2">
-        <Select
-          value={selectedRole}
-          onValueChange={(v) => setSelectedRole(v as Role)}
-          disabled={pending || isSelf}
-        >
-          <SelectTrigger className="w-[110px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+      <div className="row" style={{ gap: 6 }}>
+        <div className="field" style={{ width: 100 }}>
+          <select
+            value={selectedRole}
+            onChange={(e) => setSelectedRole(e.target.value as Role)}
+            disabled={pending || isSelf}
+            style={{ padding: '6px 8px', fontSize: 12 }}
+          >
             {Object.values(Role).map((r) => (
-              <SelectItem key={r} value={r}>
+              <option key={r} value={r}>
                 {r}
-              </SelectItem>
+              </option>
             ))}
-          </SelectContent>
-        </Select>
-        <Button
+          </select>
+        </div>
+        <button
           type="button"
-          size="sm"
-          variant="outline"
+          className="pill"
           onClick={changeRole}
           disabled={pending || selectedRole === role || isSelf}
+          style={{ padding: '6px 10px', fontSize: 12 }}
         >
           Роль
-        </Button>
-        <Button
+        </button>
+        <button
           type="button"
-          size="sm"
-          variant={isActive ? 'outline' : 'default'}
+          className={isActive ? 'pill' : 'pill pill-accent'}
           onClick={toggle}
           disabled={pending || isSelf}
+          style={{ padding: '6px 10px', fontSize: 12 }}
         >
           {isActive ? 'Блок.' : 'Вкл.'}
-        </Button>
+        </button>
       </div>
-      {isSelf && <span className="text-xs text-neutral-400">редактирование себя запрещено</span>}
-      {err && <span className="text-xs text-red-600">{err}</span>}
+      {isSelf && (
+        <span style={{ fontSize: 10.5, color: 'var(--text-meta)' }}>нельзя редактировать себя</span>
+      )}
+      {err && <span style={{ fontSize: 11, color: '#9c2a15' }}>{err}</span>}
     </div>
   );
 }

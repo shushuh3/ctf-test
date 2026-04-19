@@ -1,16 +1,6 @@
 'use client';
 
 import { useRef, useState, useTransition } from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
 import { Role } from '@/generated/prisma/enums';
 import { createUserAction } from '@/app/(app)/users/actions';
 
@@ -33,60 +23,48 @@ export function CreateUserForm() {
   }
 
   return (
-    <form
-      ref={ref}
-      action={handle}
-      className="grid grid-cols-1 gap-3 rounded-lg border border-neutral-200 bg-white p-4 md:grid-cols-5"
-    >
-      <div>
-        <Label htmlFor="email" className="text-xs">
-          Email
-        </Label>
-        <Input id="email" name="email" type="email" required />
+    <form ref={ref} action={handle} className="grid-3">
+      <div className="field">
+        <label htmlFor="email">Email</label>
+        <input id="email" name="email" type="email" required />
       </div>
-      <div>
-        <Label htmlFor="name" className="text-xs">
-          Имя
-        </Label>
-        <Input id="name" name="name" required />
+      <div className="field">
+        <label htmlFor="name">Имя</label>
+        <input id="name" name="name" required />
       </div>
-      <div>
-        <Label htmlFor="password" className="text-xs">
-          Пароль
-        </Label>
-        <Input id="password" name="password" type="password" minLength={8} required />
+      <div className="field">
+        <label htmlFor="password">Пароль</label>
+        <input id="password" name="password" type="password" minLength={8} required />
       </div>
-      <div>
-        <Label className="text-xs">Роль</Label>
-        <Select name="role" defaultValue="L1">
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.values(Role).map((r) => (
-              <SelectItem key={r} value={r}>
-                {r}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="field">
+        <label>Роль</label>
+        <select name="role" defaultValue="L1">
+          {Object.values(Role).map((r) => (
+            <option key={r} value={r}>
+              {r}
+            </option>
+          ))}
+        </select>
       </div>
-      <div className="flex items-end">
-        <Button type="submit" disabled={pending} className="w-full">
+      <div className="field" style={{ alignSelf: 'flex-end' }}>
+        <label style={{ visibility: 'hidden' }}>.</label>
+        <button type="submit" className="pill pill-accent" disabled={pending}>
           {pending ? 'Создание…' : 'Создать'}
-        </Button>
+        </button>
       </div>
-      {msg && (
-        <p
-          className={
-            msg.kind === 'ok'
-              ? 'text-xs text-emerald-700 md:col-span-5'
-              : 'text-xs text-red-600 md:col-span-5'
-          }
-        >
-          {msg.text}
-        </p>
-      )}
+      <div className="field" style={{ alignSelf: 'flex-end' }}>
+        {msg && (
+          <p
+            style={{
+              fontSize: 12,
+              color: msg.kind === 'ok' ? '#3d6a2d' : '#9c2a15',
+              paddingBottom: 10,
+            }}
+          >
+            {msg.text}
+          </p>
+        )}
+      </div>
     </form>
   );
 }

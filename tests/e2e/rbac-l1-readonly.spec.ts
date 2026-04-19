@@ -6,16 +6,16 @@ test('L1 sees the list but no mutation controls', async ({ page }) => {
   await expect(page).toHaveURL(/\/audit-results/);
 
   await expect(page.getByRole('heading', { name: 'Результаты аудитов' })).toBeVisible();
-  // Должна быть строка в таблице
   const rows = page.locator('tbody tr');
   await expect(rows.first()).toBeVisible();
 
-  // Открываем первую карточку
-  await rows.first().locator('a').first().click();
+  // Строка кликабельна целиком (role=link, onClick router.push)
+  await rows.first().click();
+  await expect(page).toHaveURL(/\/audit-results\/[^/]+$/);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
   // L1 не видит блок "Действия" и форму комментария
-  await expect(page.getByRole('heading', { name: 'Действия' })).toHaveCount(0);
+  await expect(page.getByText('Действия', { exact: true })).toHaveCount(0);
   await expect(page.getByPlaceholder('Оставить комментарий…')).toHaveCount(0);
 
   // В навбаре нет ссылки "Пользователи"

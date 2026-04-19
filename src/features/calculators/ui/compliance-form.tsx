@@ -1,27 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   calcCompliance,
   ComplianceInputSchema,
   type ComplianceResult,
 } from '../compliance/compliance';
 
-const LEVEL_TONE: Record<ComplianceResult['level'], string> = {
-  NON_COMPLIANT: 'bg-red-100 text-red-800',
-  PARTIAL: 'bg-amber-100 text-amber-800',
-  COMPLIANT: 'bg-emerald-100 text-emerald-800',
-  FULL: 'bg-green-200 text-green-900',
-};
 const LEVEL_LABEL: Record<ComplianceResult['level'], string> = {
   NON_COMPLIANT: 'Не соответствует',
   PARTIAL: 'Частичное',
   COMPLIANT: 'Соответствует',
   FULL: 'Полное соответствие',
+};
+const LEVEL_CHIP: Record<ComplianceResult['level'], string> = {
+  NON_COMPLIANT: 'sev-CRITICAL',
+  PARTIAL: 'sev-MEDIUM',
+  COMPLIANT: 'st-RESOLVED',
+  FULL: 'st-CONFIRMED',
 };
 
 export function ComplianceCalculatorForm() {
@@ -42,12 +38,10 @@ export function ComplianceCalculatorForm() {
   }
 
   return (
-    <form onSubmit={submit} className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      <div>
-        <Label htmlFor="passed" className="text-xs">
-          Выполнено требований
-        </Label>
-        <Input
+    <form onSubmit={submit} className="grid-2">
+      <div className="field">
+        <label htmlFor="passed">Выполнено требований</label>
+        <input
           id="passed"
           type="number"
           min={0}
@@ -55,11 +49,9 @@ export function ComplianceCalculatorForm() {
           onChange={(e) => setPassed(Number(e.target.value))}
         />
       </div>
-      <div>
-        <Label htmlFor="failed" className="text-xs">
-          Невыполнено требований
-        </Label>
-        <Input
+      <div className="field">
+        <label htmlFor="failed">Невыполнено требований</label>
+        <input
           id="failed"
           type="number"
           min={0}
@@ -67,21 +59,33 @@ export function ComplianceCalculatorForm() {
           onChange={(e) => setFailed(Number(e.target.value))}
         />
       </div>
-      <div className="md:col-span-2">
-        <Button type="submit">Рассчитать</Button>
+      <div style={{ gridColumn: '1 / -1' }}>
+        <button type="submit" className="pill pill-accent">
+          Рассчитать
+        </button>
       </div>
-      {err && <p className="text-xs text-red-600 md:col-span-2">{err}</p>}
+      {err && <p style={{ color: '#9c2a15', fontSize: 12, gridColumn: '1 / -1' }}>{err}</p>}
       {result && !err && (
-        <div className="space-y-2 rounded-md border border-neutral-200 bg-neutral-50 p-4 text-sm md:col-span-2">
-          <div className="flex items-center justify-between">
-            <span className="text-neutral-600">Процент соответствия</span>
-            <strong className="text-xl tabular-nums">{result.percentage}%</strong>
+        <div className="surface surface-padded" style={{ gridColumn: '1 / -1', marginTop: 4 }}>
+          <div
+            className="row"
+            style={{
+              justifyContent: 'space-between',
+              borderBottom: '1px dashed var(--border)',
+              paddingBottom: 10,
+            }}
+          >
+            <span style={{ color: 'var(--text-secondary)' }}>Процент соответствия</span>
+            <strong style={{ fontSize: 22 }} className="num">
+              {result.percentage}%
+            </strong>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-neutral-600">Уровень</span>
-            <Badge variant="outline" className={LEVEL_TONE[result.level]}>
+          <div className="row" style={{ justifyContent: 'space-between', paddingTop: 10 }}>
+            <span style={{ color: 'var(--text-secondary)' }}>Уровень</span>
+            <span className={`sev-chip ${LEVEL_CHIP[result.level]}`}>
+              <span className="d" />
               {LEVEL_LABEL[result.level]}
-            </Badge>
+            </span>
           </div>
         </div>
       )}

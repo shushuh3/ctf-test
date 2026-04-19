@@ -1,8 +1,6 @@
 'use client';
 
 import { useRef, useState, useTransition } from 'react';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
 import { addCommentAction } from '@/app/(app)/audit-results/[id]/actions';
 
 export function CommentForm({ id }: { id: string }) {
@@ -23,13 +21,15 @@ export function CommentForm({ id }: { id: string }) {
   }
 
   return (
-    <form ref={formRef} action={handleAction} className="space-y-2">
-      <Textarea name="content" placeholder="Оставить комментарий…" rows={3} required />
-      {error && <p className="text-xs text-red-600">{error}</p>}
-      <div className="flex justify-end">
-        <Button type="submit" size="sm" disabled={pending}>
+    <form ref={formRef} action={handleAction} className="stack-sm">
+      <div className="field">
+        <textarea name="content" placeholder="Оставить комментарий…" rows={3} required />
+      </div>
+      {error && <p style={{ color: '#9c2a15', fontSize: 12 }}>{error}</p>}
+      <div className="row" style={{ justifyContent: 'flex-end' }}>
+        <button type="submit" className="pill pill-accent" disabled={pending}>
           {pending ? 'Отправка…' : 'Добавить комментарий'}
-        </Button>
+        </button>
       </div>
     </form>
   );

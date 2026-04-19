@@ -1,7 +1,7 @@
 import { Bell } from 'lucide-react';
 import { PathBar } from './path-bar';
 
-export function PreviewTopbar() {
+export function AppTopbar() {
   return (
     <header className="topbar">
       <PathBar />

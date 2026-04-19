@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Button } from '@/components/ui/button';
 import { confirmFinalAction } from '@/app/(app)/audit-results/[id]/actions';
 
 export function ConfirmButton({ id, disabled }: { id: string; disabled?: boolean }) {
@@ -17,11 +16,16 @@ export function ConfirmButton({ id, disabled }: { id: string; disabled?: boolean
   }
 
   return (
-    <div className="flex flex-col gap-1">
-      <Button type="button" onClick={onClick} disabled={pending || disabled} size="sm">
+    <div className="stack-sm">
+      <button
+        type="button"
+        className="pill pill-accent"
+        onClick={onClick}
+        disabled={pending || disabled}
+      >
         {pending ? 'Подтверждаем…' : 'Подтвердить финальное решение'}
-      </Button>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      </button>
+      {error && <p style={{ color: '#9c2a15', fontSize: 12 }}>{error}</p>}
     </div>
   );
 }

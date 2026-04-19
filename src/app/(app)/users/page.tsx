@@ -2,15 +2,6 @@ import { redirect } from 'next/navigation';
 import { container } from '@/core/container';
 import { requireSession } from '@/core/rbac/require';
 import { canDo } from '@/core/rbac/permissions';
-import { Badge } from '@/components/ui/badge';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { CreateUserForm } from '@/features/users/ui/create-user-form';
 import { UserRowControls } from '@/features/users/ui/user-row-controls';
 
@@ -22,69 +13,70 @@ export default async function UsersPage() {
   const users = await container.users.list();
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Пользователи</h1>
-        <p className="text-sm text-neutral-500">
-          Управление учётными записями, ролями и активностью. Доступно только администраторам.
-        </p>
+    <div className="stack-lg">
+      <div className="page-head">
+        <div className="head-left">
+          <h1>Пользователи</h1>
+          <div className="subtle">Управление учётными записями, ролями и активностью.</div>
+        </div>
       </div>
 
-      <div>
-        <h2 className="mb-2 text-sm font-medium text-neutral-600">Создать нового</h2>
-        <CreateUserForm />
+      <div className="surface surface-padded">
+        <h2 className="card-title">Создать нового</h2>
+        <div style={{ marginTop: 14 }}>
+          <CreateUserForm />
+        </div>
       </div>
 
-      <div className="rounded-lg border border-neutral-200 bg-white">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Имя</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Роль</TableHead>
-              <TableHead>Активен</TableHead>
-              <TableHead>Создан</TableHead>
-              <TableHead className="text-right">Действия</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+      <div className="surface">
+        <table className="aud">
+          <thead>
+            <tr>
+              <th>Имя</th>
+              <th>Email</th>
+              <th>Роль</th>
+              <th>Активен</th>
+              <th>Создан</th>
+              <th className="col-right">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
             {users.map((u) => {
               const isSelf = u.id === session.user.id;
               return (
-                <TableRow key={u.id}>
-                  <TableCell className="font-medium">{u.name}</TableCell>
-                  <TableCell className="text-sm text-neutral-600">{u.email}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="font-mono">
-                      {u.role}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={
-                        u.isActive
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : 'bg-neutral-200 text-neutral-700'
-                      }
+                <tr key={u.id}>
+                  <td className="row-title">{u.name}</td>
+                  <td style={{ color: 'var(--text-secondary)' }}>{u.email}</td>
+                  <td>
+                    <span
+                      className="sev-chip sev-LOW"
+                      style={{ fontFamily: 'ui-monospace, monospace' }}
                     >
+                      {u.role}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`st-chip ${u.isActive ? 'st-RESOLVED' : 'st-REJECTED'}`}>
+                      <span className="d" />
                       {u.isActive ? 'да' : 'нет'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-sm tabular-nums">{fmtDate(u.createdAt)}</TableCell>
-                  <TableCell className="text-right">
+                    </span>
+                  </td>
+                  <td className="num" style={{ fontWeight: 500 }}>
+                    {fmtDate(u.createdAt)}
+                  </td>
+                  <td className="col-right">
                     <UserRowControls
                       id={u.id}
                       role={u.role}
                       isActive={u.isActive}
                       isSelf={isSelf}
                     />
-                  </TableCell>
-                </TableRow>
+                  </td>
+                </tr>
               );
             })}
-          </TableBody>
-        </Table>
+          </tbody>
+        </table>
       </div>
     </div>
   );

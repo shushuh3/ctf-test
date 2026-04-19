@@ -6,6 +6,7 @@ export function ClickableRow({ href, children }: { href: string; children: React
   const router = useRouter();
   return (
     <tr
+      className="clickable"
       onClick={() => router.push(href)}
       onKeyDown={(e) => {
         if (e.key === 'Enter') router.push(href);

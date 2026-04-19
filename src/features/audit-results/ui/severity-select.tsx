@@ -2,15 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { Severity } from '@/generated/prisma/enums';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { SEVERITY_LABEL } from './badges';
+import { SEVERITY_LABEL } from '@/shared/design/chips';
 import { changeSeverityAction } from '@/app/(app)/audit-results/[id]/actions';
 
 export function SeveritySelect({ id, current }: { id: string; current: Severity }) {
@@ -29,25 +21,31 @@ export function SeveritySelect({ id, current }: { id: string; current: Severity 
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2">
-        <Select value={value} onValueChange={(v) => setValue(v as Severity)} disabled={pending}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
+    <div className="stack-sm">
+      <div className="row">
+        <div className="field" style={{ width: 180 }}>
+          <select
+            value={value}
+            onChange={(e) => setValue(e.target.value as Severity)}
+            disabled={pending}
+          >
             {Object.values(Severity).map((s) => (
-              <SelectItem key={s} value={s}>
+              <option key={s} value={s}>
                 {SEVERITY_LABEL[s]}
-              </SelectItem>
+              </option>
             ))}
-          </SelectContent>
-        </Select>
-        <Button type="button" onClick={submit} disabled={pending || value === current} size="sm">
-          {pending ? '...' : 'Сохранить'}
-        </Button>
+          </select>
+        </div>
+        <button
+          type="button"
+          className="pill pill-accent"
+          onClick={submit}
+          disabled={pending || value === current}
+        >
+          {pending ? '…' : 'Сохранить'}
+        </button>
       </div>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p style={{ color: '#9c2a15', fontSize: 12 }}>{error}</p>}
     </div>
   );
 }

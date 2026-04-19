@@ -2,15 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { Status } from '@/generated/prisma/enums';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { STATUS_LABEL } from './badges';
+import { STATUS_LABEL } from '@/shared/design/chips';
 import { updateStatusAction } from '@/app/(app)/audit-results/[id]/actions';
 
 export function StatusSelect({ id, current }: { id: string; current: Status }) {
@@ -29,25 +21,31 @@ export function StatusSelect({ id, current }: { id: string; current: Status }) {
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2">
-        <Select value={value} onValueChange={(v) => setValue(v as Status)} disabled={pending}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
+    <div className="stack-sm">
+      <div className="row">
+        <div className="field" style={{ width: 180 }}>
+          <select
+            value={value}
+            onChange={(e) => setValue(e.target.value as Status)}
+            disabled={pending}
+          >
             {Object.values(Status).map((s) => (
-              <SelectItem key={s} value={s}>
+              <option key={s} value={s}>
                 {STATUS_LABEL[s]}
-              </SelectItem>
+              </option>
             ))}
-          </SelectContent>
-        </Select>
-        <Button type="button" onClick={submit} disabled={pending || value === current} size="sm">
-          {pending ? '...' : 'Сохранить'}
-        </Button>
+          </select>
+        </div>
+        <button
+          type="button"
+          className="pill pill-accent"
+          onClick={submit}
+          disabled={pending || value === current}
+        >
+          {pending ? '…' : 'Сохранить'}
+        </button>
       </div>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p style={{ color: '#9c2a15', fontSize: 12 }}>{error}</p>}
     </div>
   );
 }

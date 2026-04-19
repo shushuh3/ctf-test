@@ -1,5 +1,3 @@
-import { Separator } from '@/components/ui/separator';
-
 type Entry = {
   id: string;
   action: string;
@@ -16,39 +14,39 @@ const ACTION_LABEL: Record<string, string> = {
   severity_change: 'Смена критичности',
   confirm_final: 'Финальное подтверждение',
   comment_added: 'Добавлен комментарий',
+  role_change: 'Смена роли',
+  active_change: 'Блокировка/разблокировка',
 };
 
 const fmtDateTime = (d: Date) => new Date(d).toISOString().replace('T', ' ').slice(0, 16);
 
 export function HistoryList({ entries }: { entries: Entry[] }) {
   if (entries.length === 0) {
-    return <p className="text-sm text-neutral-500">История пуста.</p>;
+    return <p style={{ color: 'var(--text-meta)', fontSize: 13 }}>История пуста.</p>;
   }
   return (
-    <ul className="space-y-3">
+    <div>
       {entries.map((e) => (
-        <li key={e.id} className="space-y-1">
-          <div className="text-xs text-neutral-500">
-            <span className="font-medium text-neutral-800">
-              {ACTION_LABEL[e.action] ?? e.action}
-            </span>
-            {' · '}
+        <div key={e.id} className="hist-row">
+          <div className="meta-line">
+            <span className="author">{ACTION_LABEL[e.action] ?? e.action}</span> ·{' '}
             {e.actor ? (
               <>
-                <span className="text-neutral-700">{e.actor.name}</span>{' '}
-                <span className="font-mono">{e.actor.role}</span>
+                {e.actor.name}{' '}
+                <span style={{ fontFamily: 'ui-monospace, monospace' }}>{e.actor.role}</span>
               </>
             ) : (
-              <span>—</span>
-            )}
-            {' · '}
-            <span className="tabular-nums">{fmtDateTime(e.createdAt)}</span>
+              '—'
+            )}{' '}
+            ·{' '}
+            <span className="num" style={{ fontWeight: 500 }}>
+              {fmtDateTime(e.createdAt)}
+            </span>
           </div>
           <DiffView diff={e.diff} />
-          <Separator />
-        </li>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
 
@@ -57,11 +55,17 @@ function DiffView({ diff }: { diff: unknown }) {
   const entries = Object.entries(diff as Record<string, unknown>);
   if (entries.length === 0) return null;
   return (
-    <dl className="ml-1 space-y-0.5 text-xs text-neutral-600">
+    <dl
+      style={{
+        fontFamily: 'ui-monospace, monospace',
+        fontSize: 11.5,
+        color: 'var(--text-secondary)',
+      }}
+    >
       {entries.map(([k, v]) => (
-        <div key={k} className="flex gap-2">
-          <dt className="font-mono text-neutral-500">{k}:</dt>
-          <dd className="font-mono">
+        <div key={k} style={{ display: 'flex', gap: 8 }}>
+          <dt style={{ color: 'var(--text-meta)' }}>{k}:</dt>
+          <dd>
             {Array.isArray(v) && v.length === 2
               ? `${renderValue(v[0])} → ${renderValue(v[1])}`
               : JSON.stringify(v)}

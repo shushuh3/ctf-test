@@ -1,16 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   calcRisk,
   type CompensatingControls,
@@ -45,11 +35,11 @@ const SEV_LABEL: Record<Severity, string> = {
   CRITICAL: 'Критическая',
 };
 
-const LEVEL_TONE: Record<RiskResult['level'], string> = {
-  LOW: 'bg-neutral-100 text-neutral-700',
-  MEDIUM: 'bg-amber-100 text-amber-800',
-  HIGH: 'bg-orange-100 text-orange-800',
-  CRITICAL: 'bg-red-100 text-red-800',
+const LEVEL_CHIP: Record<RiskResult['level'], string> = {
+  LOW: 'sev-LOW',
+  MEDIUM: 'sev-MEDIUM',
+  HIGH: 'sev-HIGH',
+  CRITICAL: 'sev-CRITICAL',
 };
 
 export function RiskCalculatorForm() {
@@ -67,103 +57,95 @@ export function RiskCalculatorForm() {
   }
 
   return (
-    <form onSubmit={submit} className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      <Field label="Критичность">
-        <Select
+    <form onSubmit={submit} className="grid-2">
+      <div className="field">
+        <label>Критичность</label>
+        <select
           value={values.severity}
-          onValueChange={(v) => setValues((p) => ({ ...p, severity: v as Severity }))}
+          onChange={(e) => setValues((p) => ({ ...p, severity: e.target.value as Severity }))}
         >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const).map((s) => (
-              <SelectItem key={s} value={s}>
-                {SEV_LABEL[s]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
-      <Field label="Вероятность">
-        <Select
+          {(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const).map((s) => (
+            <option key={s} value={s}>
+              {SEV_LABEL[s]}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="field">
+        <label>Вероятность</label>
+        <select
           value={values.probability}
-          onValueChange={(v) => setValues((p) => ({ ...p, probability: v as RiskProbability }))}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {(['LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'] as const).map((s) => (
-              <SelectItem key={s} value={s}>
-                {PROB_LABEL[s]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
-      <Field label="Влияние">
-        <Select
-          value={values.impact}
-          onValueChange={(v) => setValues((p) => ({ ...p, impact: v as RiskImpact }))}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const).map((s) => (
-              <SelectItem key={s} value={s}>
-                {IMPACT_LABEL[s]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
-      <Field label="Компенсирующие меры">
-        <Select
-          value={values.compensatingControls}
-          onValueChange={(v) =>
-            setValues((p) => ({ ...p, compensatingControls: v as CompensatingControls }))
+          onChange={(e) =>
+            setValues((p) => ({ ...p, probability: e.target.value as RiskProbability }))
           }
         >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {(['NONE', 'PARTIAL', 'FULL'] as const).map((s) => (
-              <SelectItem key={s} value={s}>
-                {COMP_LABEL[s]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
-      <div className="md:col-span-2">
-        <Button type="submit">Рассчитать</Button>
+          {(['LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'] as const).map((s) => (
+            <option key={s} value={s}>
+              {PROB_LABEL[s]}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="field">
+        <label>Влияние</label>
+        <select
+          value={values.impact}
+          onChange={(e) => setValues((p) => ({ ...p, impact: e.target.value as RiskImpact }))}
+        >
+          {(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const).map((s) => (
+            <option key={s} value={s}>
+              {IMPACT_LABEL[s]}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="field">
+        <label>Компенсирующие меры</label>
+        <select
+          value={values.compensatingControls}
+          onChange={(e) =>
+            setValues((p) => ({
+              ...p,
+              compensatingControls: e.target.value as CompensatingControls,
+            }))
+          }
+        >
+          {(['NONE', 'PARTIAL', 'FULL'] as const).map((s) => (
+            <option key={s} value={s}>
+              {COMP_LABEL[s]}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div style={{ gridColumn: '1 / -1' }}>
+        <button type="submit" className="pill pill-accent">
+          Рассчитать
+        </button>
       </div>
       {result && (
-        <div className="rounded-md border border-neutral-200 bg-neutral-50 p-4 text-sm md:col-span-2">
-          <div className="flex items-center justify-between gap-4">
-            <span className="text-neutral-600">Итоговый риск-скор</span>
-            <strong className="text-xl tabular-nums">{result.riskScore}</strong>
+        <div className="surface surface-padded" style={{ gridColumn: '1 / -1', marginTop: 4 }}>
+          <div
+            className="row"
+            style={{
+              justifyContent: 'space-between',
+              borderBottom: '1px dashed var(--border)',
+              paddingBottom: 10,
+            }}
+          >
+            <span style={{ color: 'var(--text-secondary)' }}>Итоговый риск-скор</span>
+            <strong style={{ fontSize: 22 }} className="num">
+              {result.riskScore}
+            </strong>
           </div>
-          <div className="mt-2 flex items-center justify-between gap-4">
-            <span className="text-neutral-600">Уровень</span>
-            <Badge variant="outline" className={LEVEL_TONE[result.level]}>
+          <div className="row" style={{ justifyContent: 'space-between', paddingTop: 10 }}>
+            <span style={{ color: 'var(--text-secondary)' }}>Уровень</span>
+            <span className={`sev-chip ${LEVEL_CHIP[result.level]}`}>
+              <span className="d" />
               {result.level}
-            </Badge>
+            </span>
           </div>
         </div>
       )}
     </form>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <Label className="text-xs">{label}</Label>
-      {children}
-    </div>
   );
 }
