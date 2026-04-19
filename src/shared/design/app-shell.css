@@ -28,8 +28,9 @@
   --tone-red-bg: #fce4de;
   --tone-red-fg: #9c2a15;
 
-  --radius-card: 12px;
-  --radius-button: 8px;
+  --radius-card: 16px;
+  --radius-button: 10px;
+  --radius-chip: 12px;
   --sidebar-w: 252px;
   --topbar-h: 56px;
 
@@ -151,10 +152,24 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
+}
+/* .surface-clip — для таблиц/списков, где нужно обрезать наследников по radius. */
+.app-root .surface-clip {
   overflow: hidden;
 }
 .app-root .surface-padded {
-  padding: 20px 24px;
+  padding: 22px 26px;
+}
+.app-root .surface-hoverable {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+.app-root .surface-hoverable:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 8px 24px -16px rgba(20, 19, 17, 0.18);
+  transform: translateY(-1px);
 }
 
 /* ——— Таблица ——— */
@@ -638,12 +653,84 @@
 .app-root .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 20px;
 }
 .app-root .grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* ——— KPI cards grid ——— */
+.app-root .kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 16px;
+}
+@media (max-width: 1200px) {
+  .app-root .kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .app-root .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.app-root .kpi-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 18px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  overflow: hidden;
+}
+.app-root .kpi-card .kpi-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  margin-bottom: 4px;
+}
+.app-root .kpi-card .kpi-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-meta);
+  font-weight: 600;
+}
+.app-root .kpi-card .kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+.app-root .kpi-card--gray .kpi-icon {
+  background: var(--tone-gray-bg);
+  color: var(--tone-gray-fg);
+}
+.app-root .kpi-card--red .kpi-icon {
+  background: var(--tone-red-bg);
+  color: var(--tone-red-fg);
+}
+.app-root .kpi-card--amber .kpi-icon {
+  background: var(--tone-amber-bg);
+  color: var(--tone-amber-fg);
+}
+.app-root .kpi-card--orange .kpi-icon {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.app-root .kpi-card--blue .kpi-icon {
+  background: var(--tone-blue-bg);
+  color: var(--tone-blue-fg);
 }
 @media (max-width: 900px) {
   .app-root .grid-2,
@@ -659,24 +746,19 @@
 }
 
 /* ——— Dropdown (кастомный select) ——— */
-.app-root .dropdown,
-.login-card .dropdown {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-.app-root .dropdown-trigger {
+/* Trigger живёт внутри .app-root */
+.dropdown-trigger {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   width: 100%;
   padding: 9px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-button);
-  background: var(--surface);
-  color: var(--text-primary);
-  font-family: inherit;
+  border: 1px solid #ecebe6;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #141311;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -685,75 +767,192 @@
     border-color 0.15s ease,
     background 0.15s ease;
 }
-.app-root .dropdown-trigger:hover {
-  border-color: var(--border-strong);
+.dropdown-trigger:hover {
+  border-color: #d8d6cf;
 }
-.app-root .dropdown-trigger:focus-visible {
-  border-color: var(--accent);
+.dropdown-trigger:focus-visible,
+.dropdown-trigger--open {
+  border-color: #de6a1b;
   outline: 0;
 }
-.app-root .dropdown[data-open] > .dropdown-trigger {
-  border-color: var(--accent);
-}
-.app-root .dropdown-trigger:disabled {
+.dropdown-trigger:disabled {
   opacity: 0.55;
   cursor: default;
-  background: var(--canvas);
+  background: #fafaf9;
 }
-.app-root .dropdown-trigger .muted {
-  color: var(--text-meta);
+.dropdown-trigger .muted {
+  color: #9a958c;
 }
-.app-root .dropdown-trigger svg {
+.dropdown-trigger svg {
   opacity: 0.65;
   transition: transform 0.15s ease;
   flex-shrink: 0;
 }
-.app-root .dropdown[data-open] > .dropdown-trigger svg {
+.dropdown-trigger--open svg {
   transform: rotate(180deg);
 }
 
-.app-root .dropdown-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  z-index: 50;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-button);
-  box-shadow: 0 10px 30px -10px rgba(20, 19, 17, 0.18);
+/* Menu рендерится через Portal → живёт в body, вне .app-root */
+.dropdown-menu {
+  z-index: 100;
+  background: #ffffff;
+  border: 1px solid #ecebe6;
+  border-radius: 12px;
+  box-shadow: 0 14px 40px -14px rgba(20, 19, 17, 0.22);
   padding: 4px;
-  max-height: 260px;
+  max-height: 320px;
   overflow-y: auto;
   list-style: none;
   margin: 0;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }
-.app-root .dropdown-item {
+.dropdown-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 8px 10px;
-  border-radius: 6px;
+  padding: 9px 11px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13.5px;
   font-weight: 500;
-  color: var(--text-primary);
+  color: #141311;
   transition:
     background 0.1s ease,
     color 0.1s ease;
 }
-.app-root .dropdown-item:hover {
-  background: var(--surface-hover);
+.dropdown-item:hover {
+  background: #f4f3ef;
 }
-.app-root .dropdown-item[data-selected] {
-  color: var(--accent);
-  background: var(--accent-soft);
+.dropdown-item[data-selected] {
+  color: #de6a1b;
+  background: #fff5ec;
   font-weight: 600;
 }
-.app-root .dropdown-item svg {
+.dropdown-item svg {
   opacity: 0.9;
   flex-shrink: 0;
+}
+
+/* ——— Date picker ——— */
+.datepicker-popup {
+  z-index: 100;
+  background: #ffffff;
+  border: 1px solid #ecebe6;
+  border-radius: 14px;
+  box-shadow: 0 14px 40px -14px rgba(20, 19, 17, 0.22);
+  padding: 14px;
+  width: 280px;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  color: #141311;
+}
+.datepicker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.datepicker-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.datepicker-nav {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: #5c5a54;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.datepicker-nav:hover {
+  background: #f4f3ef;
+  color: #141311;
+}
+.datepicker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9a958c;
+  font-weight: 600;
+  text-align: center;
+}
+.datepicker-weekdays span {
+  padding: 6px 0;
+}
+.datepicker-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.datepicker-day {
+  height: 32px;
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: #141311;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
+}
+.datepicker-day:hover {
+  background: #f4f3ef;
+}
+.datepicker-day[data-muted] {
+  color: #d8d6cf;
+}
+.datepicker-day[data-today] {
+  border: 1px solid #f2d9bf;
+}
+.datepicker-day[data-selected] {
+  background: #de6a1b;
+  color: #fff;
+  font-weight: 700;
+}
+.datepicker-day[data-selected]:hover {
+  background: #c85d15;
+}
+.datepicker-footer {
+  display: flex;
+  gap: 10px;
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: 1px solid #ecebe6;
+  justify-content: space-between;
+}
+.datepicker-link {
+  border: 0;
+  background: transparent;
+  color: #5c5a54;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+  font-family: inherit;
+}
+.datepicker-link:hover {
+  color: #de6a1b;
+  background: #fff5ec;
 }
 
 /* ——— Tabs ——— */

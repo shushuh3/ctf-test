@@ -15,10 +15,11 @@ test('L2 changes status + adds comment, both appear in history', async ({ page }
   // Кастомный dropdown для статуса — первый combobox на странице.
   const statusCombobox = page.getByRole('combobox', { name: 'Статус' });
   const currentLabel = (await statusCombobox.innerText()).trim();
+  await statusCombobox.scrollIntoViewIfNeeded();
   await statusCombobox.click();
-  // Выбираем опцию отличную от текущей
+  // Выбираем опцию отличную от текущей (popup через portal → position:fixed)
   const target = currentLabel === 'Новый' ? 'В работе' : 'Новый';
-  await page.getByRole('option', { name: target }).click();
+  await page.getByRole('option', { name: target }).click({ force: true });
   await page.getByRole('button', { name: 'Сохранить' }).first().click();
   await page.waitForLoadState('networkidle');
 

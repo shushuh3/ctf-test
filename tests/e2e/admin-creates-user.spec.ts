@@ -16,9 +16,9 @@ test('Admin creates an L3 user and that user can log in', async ({ page }) => {
   await page.getByLabel('Имя').fill('E2E User');
   await page.getByLabel('Пароль').fill(password);
 
-  // Выбор роли — кастомный dropdown (role=combobox с aria-label)
+  // Выбор роли — кастомный dropdown (popup через portal → position:fixed)
   await page.getByRole('combobox', { name: 'Роль' }).first().click();
-  await page.getByRole('option', { name: 'L3' }).click();
+  await page.getByRole('option', { name: 'L3' }).click({ force: true });
 
   await page.getByRole('button', { name: 'Создать' }).click();
   await expect(page.getByText('Пользователь создан')).toBeVisible();

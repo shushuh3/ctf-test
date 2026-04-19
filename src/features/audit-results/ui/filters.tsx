@@ -6,6 +6,7 @@ import { useMemo, useState, useTransition } from 'react';
 import { Severity, Status } from '@/generated/prisma/enums';
 import { SEVERITY_LABEL, STATUS_LABEL } from '@/shared/design/chips';
 import { Dropdown, type DropdownOption } from '@/shared/design/dropdown';
+import { DatePicker } from '@/shared/design/date-picker';
 
 type Option = { id: string; label: string };
 type Props = {
@@ -103,7 +104,7 @@ export function AuditResultsFilters({ systems, assignees, categories }: Props) {
   }
 
   return (
-    <div className="surface">
+    <div className="surface surface-clip">
       <button
         type="button"
         className="filters-toggle"
@@ -177,21 +178,19 @@ export function AuditResultsFilters({ systems, assignees, categories }: Props) {
               />
             </div>
             <div className="field">
-              <label htmlFor="foundFrom">Обнаружено с</label>
-              <input
-                id="foundFrom"
-                type="date"
+              <label>Обнаружено с</label>
+              <DatePicker
                 value={state.foundFrom}
-                onChange={(e) => set('foundFrom', e.target.value)}
+                onChange={(v) => set('foundFrom', v)}
+                ariaLabel="Обнаружено с"
               />
             </div>
             <div className="field">
-              <label htmlFor="foundTo">Обнаружено по</label>
-              <input
-                id="foundTo"
-                type="date"
+              <label>Обнаружено по</label>
+              <DatePicker
                 value={state.foundTo}
-                onChange={(e) => set('foundTo', e.target.value)}
+                onChange={(v) => set('foundTo', v)}
+                ariaLabel="Обнаружено по"
               />
             </div>
             <div className="field" style={{ justifyContent: 'flex-end' }}>

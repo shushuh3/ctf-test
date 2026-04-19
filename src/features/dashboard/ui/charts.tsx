@@ -18,16 +18,16 @@ import {
 import type { Severity, Status } from '@/generated/prisma/enums';
 
 const SEVERITY_COLOR: Record<Severity, string> = {
-  LOW: '#a3a3a3',
+  LOW: '#c5c2b9',
   MEDIUM: '#f59e0b',
-  HIGH: '#f97316',
-  CRITICAL: '#dc2626',
+  HIGH: '#de6a1b',
+  CRITICAL: '#9c2a15',
 };
 const STATUS_COLOR: Record<Status, string> = {
-  NEW: '#3b82f6',
-  IN_PROGRESS: '#eab308',
-  RESOLVED: '#10b981',
-  REJECTED: '#6b7280',
+  NEW: '#3e5673',
+  IN_PROGRESS: '#de6a1b',
+  RESOLVED: '#3d6a2d',
+  REJECTED: '#a9a39a',
   CONFIRMED: '#15803d',
 };
 
@@ -54,11 +54,11 @@ export function SeverityChart({ data }: { data: Array<{ severity: Severity; coun
   return (
     <ResponsiveContainer width="100%" height={240}>
       <BarChart data={rows}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
-        <XAxis dataKey="label" />
-        <YAxis allowDecimals={false} />
-        <Tooltip />
-        <Bar dataKey="count" name="Кол-во">
+        <CartesianGrid strokeDasharray="3 3" stroke="#ecebe6" />
+        <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+        <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+        <Tooltip cursor={{ fill: '#fff5ec' }} />
+        <Bar dataKey="count" name="Кол-во" radius={[8, 8, 0, 0]}>
           {rows.map((r, i) => (
             <Cell key={i} fill={r.color} />
           ))}
@@ -93,11 +93,25 @@ export function SystemChart({ data }: { data: Array<{ system: string; count: num
   return (
     <ResponsiveContainer width="100%" height={240}>
       <BarChart data={data} layout="vertical" margin={{ left: 40 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#ecebe6" />
+        <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} />
+        <YAxis type="category" dataKey="system" width={140} tick={{ fontSize: 12 }} />
+        <Tooltip cursor={{ fill: '#fff5ec' }} />
+        <Bar dataKey="count" name="Нарушений" fill="#de6a1b" radius={[0, 6, 6, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+export function AssigneeChart({ data }: { data: Array<{ assignee: string; count: number }> }) {
+  return (
+    <ResponsiveContainer width="100%" height={240}>
+      <BarChart data={data} layout="vertical" margin={{ left: 20 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#ecebe6" />
         <XAxis type="number" allowDecimals={false} />
-        <YAxis type="category" dataKey="system" width={140} />
-        <Tooltip />
-        <Bar dataKey="count" name="Нарушений" fill="#6366f1" />
+        <YAxis type="category" dataKey="assignee" width={120} tick={{ fontSize: 12 }} />
+        <Tooltip cursor={{ fill: '#fff5ec' }} />
+        <Bar dataKey="count" name="Назначено" fill="#de6a1b" radius={[0, 6, 6, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -111,13 +125,29 @@ export function DynamicsChart({
   return (
     <ResponsiveContainer width="100%" height={240}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#ecebe6" />
         <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-        <YAxis allowDecimals={false} />
+        <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
         <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="found" stroke="#f97316" name="Обнаружено" />
-        <Line type="monotone" dataKey="resolved" stroke="#10b981" name="Устранено" />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Line
+          type="monotone"
+          dataKey="found"
+          stroke="#de6a1b"
+          strokeWidth={2.5}
+          dot={{ r: 3, fill: '#de6a1b' }}
+          activeDot={{ r: 5 }}
+          name="Обнаружено"
+        />
+        <Line
+          type="monotone"
+          dataKey="resolved"
+          stroke="#3d6a2d"
+          strokeWidth={2.5}
+          dot={{ r: 3, fill: '#3d6a2d' }}
+          activeDot={{ r: 5 }}
+          name="Устранено"
+        />
       </LineChart>
     </ResponsiveContainer>
   );

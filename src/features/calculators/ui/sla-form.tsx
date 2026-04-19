@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Dropdown, type DropdownOption } from '@/shared/design/dropdown';
+import { DatePicker } from '@/shared/design/date-picker';
 import { calcSla, type SlaInput, type SlaResult } from '../sla/sla';
 
 const SEVERITY_OPTIONS: DropdownOption[] = [
@@ -37,14 +38,8 @@ export function SlaCalculatorForm() {
   return (
     <form onSubmit={submit} className="grid-3">
       <div className="field">
-        <label htmlFor="foundAt">Дата обнаружения</label>
-        <input
-          id="foundAt"
-          type="date"
-          value={foundAt}
-          onChange={(e) => setFoundAt(e.target.value)}
-          required
-        />
+        <label>Дата обнаружения</label>
+        <DatePicker value={foundAt} onChange={setFoundAt} ariaLabel="Дата обнаружения" />
       </div>
       <div className="field">
         <label>Критичность</label>

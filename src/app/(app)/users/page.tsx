@@ -28,7 +28,7 @@ export default async function UsersPage() {
         </div>
       </div>
 
-      <div className="surface">
+      <div className="surface surface-clip">
         <table className="aud">
           <thead>
             <tr>

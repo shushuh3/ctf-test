@@ -8,10 +8,13 @@ test('SLA calculator returns a deadline for a known input', async ({ page }) => 
   await page.getByRole('tab', { name: 'SLA' }).click();
   await expect(page.getByRole('heading', { name: 'Калькулятор SLA' })).toBeVisible();
 
+  // Дата обнаружения выбирается через кастомный DatePicker.
+  // Клик по триггеру (aria-label="Дата обнаружения") → "Сегодня" из popup-портала.
+  await page.getByRole('button', { name: 'Дата обнаружения' }).click();
+  await page.getByRole('button', { name: 'Сегодня' }).click({ force: true });
+
   // SLA-форма — единственная, содержащая поле "Нормативный срок"
   const slaForm = page.locator('form').filter({ hasText: 'Нормативный срок' });
-
-  await slaForm.locator('input[type="date"]').fill('2026-03-01');
   await slaForm.getByRole('button', { name: 'Рассчитать' }).click();
 
   await expect(slaForm.getByText('Дедлайн')).toBeVisible();

@@ -74,7 +74,7 @@ export default async function AuditResultsPage({ searchParams }: PageProps) {
         categories={categories}
       />
 
-      <div className="surface">
+      <div className="surface surface-clip">
         <table className="aud">
           <thead>
             <tr>
